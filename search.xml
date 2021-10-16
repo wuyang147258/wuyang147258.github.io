@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>关于Node写接口vue跨域问题Cors</title>
+      <link href="/2021/101650482.html"/>
+      <url>/2021/101650482.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="vue-跨域，同源策略"><a href="#vue-跨域，同源策略" class="headerlink" title="vue 跨域，同源策略"></a>vue 跨域，同源策略</h1><h2 id="同源策略："><a href="#同源策略：" class="headerlink" title="同源策略："></a>同源策略：</h2><p>同原策略就是协议，域名，端口号必须完全相同。因为前端经常会用到 Ajax 请求接口中的数据，Ajax 就遵循同源策略。所以我们就需要解决这个问题。因为我最近在用 node 写接口，然后用 vue 写前端进行渲染。遇到了这个跨域问题，所以我在网上找了很多解决方案。我只能说我现在不是很能理解这些解决方案的意思，以后慢慢理解。</p><h2 id="node-接口端："><a href="#node-接口端：" class="headerlink" title="node 接口端："></a>node 接口端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">// 处理cors跨域/* 全系统设置跨域处理 */// CORS & Preflight requestapp.use((req, res, next) => &#123;  if (req.path !== '/' && !req.path.includes('.')) &#123;    res.set(&#123;      'Access-Control-Allow-Credentials': true,      'Access-Control-Allow-Origin': req.headers.origin || '*',      'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type',      'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',      'Content-Type': 'application/json; charset=utf-8'    &#125;)  &#125;  req.method === 'OPTIONS' ? res.status(204).end() : next()&#125;)</code></pre><h2 id="vue-端："><a href="#vue-端：" class="headerlink" title="vue 端："></a>vue 端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">import axios from 'axios'import qs from 'qs'axios.defaults.withCredentials = true // 允许跨域设置，不然可能因为拿不到cookie而报错axios.defaults.baseURL = 'http://localhost:3000/' /*这里的地址就是刚刚启起来的服务器地址,就是node端服务器的地址 *//*请求拦截*/axios.interceptors.request.use(  config => &#123;    if (config.meth === 'post' && !(config.data instanceof FormData)) &#123;      config.headers = &#123;        'Content-Type': 'application/x-www-form-urlencoded'      &#125;      config.data = qs.stringify(config.data, &#123;        arrayFormat: 'repeat'      &#125;) /*这里是，后端要求传数组的时候做的设置，以前出过错*/    &#125;    return config  &#125;,  error => &#123;    return Promise.reject(error)  &#125;)/* 响应拦截 */axios.interceptors.response.use(  res => &#123;    /*可在这里根据返回的状态码做一些拦截操作*/    return res  &#125;,  err => &#123;    return Promise.resolve(err)  &#125;)export default axios /*记得导出*/</code></pre><p>这两个设置完之后应该就不会出现跨域的问题，反正我测试的接口现在可以用 axios 请求到数据了，虽然我不是非常理解为什么这样写。但是有需求急迫解决这个问题的可以借鉴一下。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> vue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>设计模式</title>
       <link href="/2021/10121.html"/>
       <url>/2021/10121.html</url>
