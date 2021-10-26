@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>关于axios各种请求方式的传参总结</title>
+      <link href="/2021/102150482.html"/>
+      <url>/2021/102150482.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="axios-传参"><a href="#axios-传参" class="headerlink" title="axios 传参"></a>axios 传参</h1><h3 id="这几天我在写我的-vue-项目后台接口，因为是第一次写所以我写遇到了一些小问题-axios-各种请求方式的传参数。基本将常用的请求方式都用过了所以现在总结一下。"><a href="#这几天我在写我的-vue-项目后台接口，因为是第一次写所以我写遇到了一些小问题-axios-各种请求方式的传参数。基本将常用的请求方式都用过了所以现在总结一下。" class="headerlink" title="这几天我在写我的 vue 项目后台接口，因为是第一次写所以我写遇到了一些小问题,axios 各种请求方式的传参数。基本将常用的请求方式都用过了所以现在总结一下。"></a>这几天我在写我的 vue 项目后台接口，因为是第一次写所以我写遇到了一些小问题,axios 各种请求方式的传参数。基本将常用的请求方式都用过了所以现在总结一下。</h3><h2 id="get-请求方式"><a href="#get-请求方式" class="headerlink" title="get 请求方式"></a>get 请求方式</h2><p>get 请求方式我使用的是 Params 进行传参,前端代码:</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; data: res &#125; = await this.$http.get(`/goods/query`, &#123;  params: &#123;    query: this.query  &#125;&#125;)</code></pre><p>然后后台接口接受传参</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">let query = req.query.query</code></pre><h2 id="post-请求方式"><a href="#post-请求方式" class="headerlink" title="post 请求方式"></a>post 请求方式</h2><p>前端传参</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; data: res &#125; = await this.$http.post('/goods/increase', this.increaseInfo)</code></pre><p>接口接收参数</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">let name = req.body.namelet price = req.body.pricelet type = req.body.typelet area = req.body.area</code></pre><h2 id="put-请求"><a href="#put-请求" class="headerlink" title="put 请求"></a>put 请求</h2><p>前端传参<br>第一种办法</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; data: res &#125; = await this.$http.put(`/goods/info/`, this.editInfo)</code></pre><p>后端接口</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">let id = req.body.idid = parseInt(id)let name = req.body.namelet price = req.body.priceprice = parseInt(price)</code></pre><p>第二种办法<br>前端传参</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; data: res &#125; = await this.$http.put(`/goods/status/$&#123;numId&#125;/$&#123;status&#125;`)</code></pre><p>后端接口</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">router.put('/status/:id/:status', function (req, res) &#123;  goods.updateStatus(req, res)&#125;)let id = req.params.idlet status = req.params.status</code></pre><h2 id="delete-请求"><a href="#delete-请求" class="headerlink" title="delete 请求"></a>delete 请求</h2><p>前端传参</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; data: res &#125; = await this.$http.delete(`/goods/delete`, &#123;  data: &#123;    id: numId  &#125;&#125;)</code></pre><p>后端接口</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">req.body.id</code></pre><p>这样就可以简单的获取到了前端传过来的参数，有很多办法可以进行传参这只是我刚开始使用的方法，肯定有不好的地方。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> vue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>关于Node写接口vue跨域问题Cors</title>
       <link href="/2021/101650482.html"/>
       <url>/2021/101650482.html</url>
