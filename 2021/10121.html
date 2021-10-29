@@ -462,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    749
+                    843
                 </div>
                 
 
@@ -588,6 +588,7 @@ console.log(instance2.colors)//['red','black']
 instance2.getName()//css book
 instance2.getTime()//2021
 </code></pre>
+<p>一开始我对 p.constructor = subClass 这句话有歧义，因为我感觉去掉也是可以的。但是我上网查询了一下资料。不把 constructor 指回子类是可以的，但是后面添加原型方法就会出现问题。constructor 一般在闭包不能直接访问的情况下可以通过 constructor 进行添加一些方法。</p>
 
                 
             </div>
