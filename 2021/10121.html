@@ -462,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.8k
                 </div>
                 
 
@@ -661,6 +661,57 @@ function createPop(type, text) &#123;
 var userNameAlert = createPop('alert', '另一种工厂警示框') //2警示框
 console.log(userNameAlert.content) //另一种工厂警示框
 </code></pre>
+<h2 id="安全类，安全工厂方法"><a href="#安全类，安全工厂方法" class="headerlink" title="安全类，安全工厂方法"></a>安全类，安全工厂方法</h2><p>我们在使用类的时候如果不进行实例的话，可能就会出现问题。小白可能在实例化的时候忘记 new 关键字。这个时候就可能出现一些问题。所以我们需要使用安全类</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//不使用安全模式的类
+var Demo = function () &#123;&#125;
+Demo.prototype = &#123;
+  show: function () &#123;
+    console.log('成功获取')
+  &#125;
+&#125;
+var demo = new Demo()
+demo.show() //成功获取
+
+var demo2 = Demo
+demo2.show() //报错
+//安全模式类
+var Test = function () &#123;
+  if (!(this instanceof Test)) &#123;
+    return new Test()
+  &#125;
+&#125;
+Test.prototype = &#123;
+  show: function () &#123;
+    console.log('安全获取')
+  &#125;
+&#125;
+var d = Test()
+d.show() //安全获取
+</code></pre>
+<p>我们上面说了怎样使用简单工厂模式，但是当我们需求过多的时候。我们不仅仅要添加类，还要修改工厂函数。这简直更加麻烦。所以我们这时候可以使用安全工厂方法</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">var Factory = function (type, count) &#123;
+  if (this instanceof Factory) &#123;
+    //这时候使用者new了实例,返回对应的方法
+    let s = new this[type](count)
+    return s
+  &#125; else &#123;
+    //这时使用者没有new，应该构造一个工厂实例然后返回
+    return new Factory(type, count)
+  &#125;
+&#125;
+//添加工厂方法
+Factory.prototype = &#123;
+  java: function (count) &#123;
+    consloe.log(count)
+  &#125;,
+  javascript: function (count) &#123;
+    consloe.log(count)
+  &#125;
+&#125;
+var use = Factory('java', '使用java') // 使用java
+//我们使用的时候 无论使不使用new 都可以使用工厂中的方法
+</code></pre>
+<p>当我们没有使用 new 的时候 这时候的 this 指向的 window 全局对象，所以 this instanceof Factory 这个就时 false 然后代码执行 else{} 返回了一个实例的 Factory 然后这时候的 this 指向的就是 Factory 了。然后 this 其实就是这个工厂构造，然后里面有这几个工厂方法.this[type]=this.java。 所以返回的 s 其实就是 java 这个方法了。</p>
 
                 
             </div>
