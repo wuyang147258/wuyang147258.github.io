@@ -462,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    843
+                    1.4k
                 </div>
                 
 
@@ -589,6 +589,78 @@ instance2.getName()//css book
 instance2.getTime()//2021
 </code></pre>
 <p>一开始我对 p.constructor = subClass 这句话有歧义，因为我感觉去掉也是可以的。但是我上网查询了一下资料。不把 constructor 指回子类是可以的，但是后面添加原型方法就会出现问题。constructor 一般在闭包不能直接访问的情况下可以通过 constructor 进行添加一些方法。</p>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>当我们实现登录功能的时候，我们可能会用到警示框，提示框各种有些区别的框框。我们第一个想到的是将其封装成一个一个方法。但是只能一味的封装类，可能每一个框中有一些东西出现了差异之后，这时我们就需要再创建一个类。这实在是太麻烦了</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//自定义警示框 不使用工厂类创建
+//需求：需要一个警示框，错误提示框，确认框(确认框中需要添加一个注册按钮)
+var LoginAlert = function (text) &#123;
+  this.content = text
+&#125;
+LoginAlert.prototype.show = function () &#123;
+  //显示警示框
+  console.log('显示警示框')
+&#125;
+//警示框
+
+//需要创建一个新类
+var LoginComfim = function (text) &#123;
+  this.content = text
+&#125;
+LoginComfim.prototype.show = function () &#123;
+  //展示确认框
+&#125;
+//当内容又有一点差异时
+
+var LoginPromat = function (text) &#123;
+  this.content = text
+&#125;
+LoginPromat.prototype.show = function () &#123;
+  //展示
+&#125;
+
+//使用简单工厂模式
+
+var PopFactory = function (name) &#123;
+  switch (name) &#123;
+    case 'alert':
+      return LoginAlert
+    case 'confim':
+      return LoginComfim
+    case 'prompt':
+      return LoginPromat
+  &#125;
+&#125;
+
+var Factory = new PopFactory('alert')
+var alert = new Factory('警示框')
+console.log(alert.content) //警示框
+alert.show() //显示警示框
+</code></pre>
+<p>当我们使用了这个工厂之后，再注册模块中也可以使用在完成登录模块时封装的方法。而且我们只需要记住这个工厂就好。<br>但是我们发现这封装的三个类中有很多相似点，所以我们遇到这种情况需要使用另一种工厂模式</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//另一种简单工厂化模式
+function createPop(type, text) &#123;
+  //创建一个对象，并对对象拓展属性和方法
+  var o = new Object()
+  o.content = text
+  o.show = function () &#123;
+    //共有方法
+  &#125;
+  if (type == 'alert') &#123;
+    //警示框差异部分
+    console.log('2警示框')
+  &#125;
+  if (type == 'prompt') &#123;
+    //提示框差异部分
+    console.log('提示框')
+  &#125;
+  if (type == 'confim') &#123;
+    console.log('确认框')
+  &#125;
+  return o
+&#125;
+
+var userNameAlert = createPop('alert', '另一种工厂警示框') //2警示框
+console.log(userNameAlert.content) //另一种工厂警示框
+</code></pre>
 
                 
             </div>
