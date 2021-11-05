@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>vue2.0 vue3.0数据代理数据劫持</title>
+      <link href="/2021/110350482.html"/>
+      <url>/2021/110350482.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="vue2-0-中响应式数据"><a href="#vue2-0-中响应式数据" class="headerlink" title="vue2.0 中响应式数据"></a>vue2.0 中响应式数据</h1><p>响应式数据：在页面上进行数据的改动 页面也会随之进行更新。<br>在 vue2.0 中我们在 data 中定义的数据都被 vue 进行了响应式处理。在 vue2.0 中对象 vue 底层是通过观察者模式和 Object.definePropety 进行数据代理和劫持。数组是通过包装 7 个数组方法进行响应式处理。<br>问题：</p><p>1.对象直接新添加的属性或删除已有属性，不会直接更新界面<br> 解决方案：</p><ul><li>删除操作：this.$delete(this.对象名,’属性名’)</li><li>新增操作：this.$set(this.对象名,’属性名’,’属性值’)</li></ul><hr><p>2.直接通过下标替换元素或更新数组的 length，界面不会直接更新</p><ul><li>更改 this.$set(this.数组名,索引,’值’)</li><li>使用数组的 7 个方法:push,pop,shift,unshift,splice,sort,reverse</li><li>删除 this.$delete(this.数组名,索引)</li><li>变更方法，顾名思义，会变更调用了这些方法的原始数组。相比之下，也有非变更方法，例如 filter()、concat() 和 slice()。它们不会变更原始数组，而总是返回一个新数组。当使用非变更方法时，可以用新数组替换旧数组：</li></ul><pre class=" language-lang-javascript"><code class="language-lang-javascript">example1.items = example1.items.filter(function (item) &#123;  return item.message.match(/Foo/)&#125;)</code></pre><p>你可能认为这将导致 Vue 丢弃现有 DOM 并重新渲染整个列表。幸运的是，事实并非如此。Vue 为了使得 DOM 元素得到最大范围的重用而实现了一些智能的启发式方法，所以用一个含有相同元素的数组去替换原来的数组是非常高效的操作.</p><h1 id="vue3-0-中响应式数据"><a href="#vue3-0-中响应式数据" class="headerlink" title="vue3.0 中响应式数据"></a>vue3.0 中响应式数据</h1><p>vue3.0 中是通过代理和反射对数据进行数据劫持</p><h3 id="ref-修饰对基本类型的响应式"><a href="#ref-修饰对基本类型的响应式" class="headerlink" title="ref 修饰对基本类型的响应式"></a>ref 修饰对基本类型的响应式</h3><p>语法: const xxx = ref(initValue):</p><ul><li>创建一个包含响应式数据的引用(reference)对象</li><li>js 中操作数据: xxx.value</li><li>模板中操作数据: 不需要.value</li></ul><h3 id="reactive"><a href="#reactive" class="headerlink" title="reactive"></a>reactive</h3><ul><li>作用: 定义多个数据的响应式</li><li>const proxy = reactive(obj): 接收一个普通对象然后返回该普通对象的响应式代理器对象</li><li>响应式转换是“深层的”：会影响对象内部所有嵌套的属性</li><li>内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据都是响应式的</li></ul><p>原理：</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">const user = &#123;  name: 'John',  age: 12&#125;/*     proxyUser是代理对象, user是被代理对象    后面所有的操作都是通过代理对象来操作被代理对象内部属性    */const proxyUser = new Proxy(user, &#123;  get(target, prop) &#123;    console.log('劫持get()', prop)    return Reflect.get(target, prop)  &#125;,  set(target, prop, val) &#123;    console.log('劫持set()', prop, val)    return Reflect.set(target, prop, val) // (2)  &#125;,  deleteProperty(target, prop) &#123;    console.log('劫持delete属性', prop)    return Reflect.deleteProperty(target, prop)  &#125;&#125;)// 读取属性值console.log(proxyUser === user)console.log(proxyUser.name, proxyUser.age)// 设置属性值proxyUser.name = 'bob'proxyUser.age = 13console.log(user)// 添加属性proxyUser.sex = '男'console.log(user)// 删除属性delete proxyUser.sexconsole.log(user)</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> vue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>关于axios各种请求方式的传参总结</title>
       <link href="/2021/102150482.html"/>
       <url>/2021/102150482.html</url>
