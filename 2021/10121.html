@@ -462,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    2.1k
                 </div>
                 
 
@@ -712,6 +712,47 @@ var use = Factory('java', '使用java') // 使用java
 //我们使用的时候 无论使不使用new 都可以使用工厂中的方法
 </code></pre>
 <p>当我们没有使用 new 的时候 这时候的 this 指向的 window 全局对象，所以 this instanceof Factory 这个就时 false 然后代码执行 else{} 返回了一个实例的 Factory 然后这时候的 this 指向的就是 Factory 了。然后 this 其实就是这个工厂构造，然后里面有这几个工厂方法.this[type]=this.java。 所以返回的 s 其实就是 java 这个方法了。</p>
+<h2 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h2><p>抽象工厂更加体现类的继承关系。一般是先创建抽象工厂，然后创建具体抽象工厂，最后是产品。</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//创建抽象工厂类
+var AbstractFactory = function (subType, superType) &#123;
+  //判断抽象工厂中是否有此具体抽象工厂
+  if (typeof AbstractFactory[superType] === 'function') &#123;
+    //创建缓存类
+    var F = function () &#123;&#125;
+    //继承抽象工厂类的属性
+    F.prototype = new AbstractFactory[superType]()
+    //指回
+    subType.constructor = subType
+    //子类继承父类
+    subType.prototype = new F()
+  &#125; else &#123;
+    return '没有此抽象工厂'
+  &#125;
+&#125;
+//创建具体抽象工厂
+AbstractFactory.Car = function () &#123;
+  this.type = 'car'
+&#125;
+//创建抽象产品类
+var BWM = function (price, speed) &#123;
+  this.price = price
+  this.speed = speed
+&#125;
+//继承父类(具体抽象工厂)
+AbstractFactory(BWM, 'Car')
+//抽象产品类的方法
+BWM.prototype.getPrice = function () &#123;
+  return this.price
+&#125;
+BWM.prototype.getSpeed = function () &#123;
+  return this.speed
+&#125;
+
+//创建具体产品
+var threeXi = new BWM('价格', '速度')
+conlog.log(threeXi.getPrice()) //价格
+conlog.log(threeXi.getSpeed()) //速度
+</code></pre>
 
                 
             </div>
