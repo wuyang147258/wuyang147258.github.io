@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="第一篇博客小试牛刀, tbg">
+    <meta name="keywords" content="vuex刷新数据丢失, tbg">
     <meta name="description" content="Try to encourage each other">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>第一篇博客小试牛刀 | tbg</title>
+    <title>vuex刷新数据丢失 | tbg</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -320,12 +320,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">第一篇博客小试牛刀</h1>
+                    <h1 class="description center-align post-title">vuex刷新数据丢失</h1>
                 </div>
             </div>
         </div>
@@ -441,8 +441,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E6%88%90%E9%95%BF%E7%BB%8F%E5%8E%86/">
-                                <span class="chip bg-color">成长经历</span>
+                            <a href="/tags/vue/">
+                                <span class="chip bg-color">vue</span>
                             </a>
                         
                     </div>
@@ -457,7 +457,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-09-28
+                    2021-11-15
                 </div>
                 
 
@@ -466,7 +466,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    225
+                    93
                 </div>
                 
 
@@ -483,11 +483,19 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="成长"><a href="#成长" class="headerlink" title="成长"></a>成长</h1><h2 id="一个前端小白的成长经历"><a href="#一个前端小白的成长经历" class="headerlink" title="一个前端小白的成长经历"></a>一个前端小白的成长经历</h2><ul>
-<li>见证了自己的成长，真的很幸福。从大一到现在一直一个人在自学，到现在可以做一些<br>有趣的东西，可以做一些好玩的东西感觉真好。虽然自己出了很多 bug，但是基本上也都<br>上网进行了解决，也有看见困难就退缩的时候，比如这个博客一开始我就没有搭建好，<br>然后放弃了搭建。几天后我又重拾进行搭建。现在终于成功了，所以不是办不到，只是<br>看自己想不想干了。</li>
-</ul>
-<h2 id="可爱的小猫"><a href="#可爱的小猫" class="headerlink" title="可爱的小猫"></a>可爱的小猫</h2><p>以后在能养活自己的前提养一只小猫！<br><img src="https://th.bing.com/th/id/R.f18f12a4ba5ae21a01bd8a8ecae7fa42?rik=5S8Pjv29%2fYLEnA&amp;pid=ImgRaw&amp;r=0" alt=""></p>
-<h2 id="vue-网易云"><a href="#vue-网易云" class="headerlink" title="vue 网易云"></a>vue 网易云</h2><p>这是自己做的 pc 端网易云，完全自己做。我样式搞得不是很好，需要重新加工。<br>这是 GitHub 地址 <a target="_blank" rel="noopener" href="https://github.com/wuyang147258/vue-music-pc">vue 网易云</a></p>
+                <p>当数据不是特别多的时候，我们可以将 vuex 中保存的数据保存到 sessionStorage 中</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//vue 3.0
+if (sessionStorage.getItem('store')) &#123;
+  proxy.$store.replaceState(Object.assign(&#123;&#125;, proxy.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+&#125;
+
+//在页面刷新时将vuex里的信息保存到sessionStorage里
+window.addEventListener('beforeunload', () => &#123;
+  sessionStorage.setItem('store', JSON.stringify(proxy.$store.state))
+&#125;)
+//取出数据
+let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
+</code></pre>
 
                 
             </div>
@@ -514,7 +522,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wuyang147258.gitub.io/2021/092839553.html">http://wuyang147258.gitub.io/2021/092839553.html</a>
+                    <a href="http://wuyang147258.gitub.io/2021/111550482.html">http://wuyang147258.gitub.io/2021/111550482.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -552,8 +560,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E6%88%90%E9%95%BF%E7%BB%8F%E5%8E%86/">
-                                    <span class="chip bg-color">成长经历</span>
+                                <a href="/tags/vue/">
+                                    <span class="chip bg-color">vue</span>
                                 </a>
                             
                         </div>
@@ -725,17 +733,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/092950482.html">
+                <a href="/2021/111550482.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="vue-music-pc项目">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="vuex刷新数据丢失">
                         
-                        <span class="card-title">vue-music-pc项目</span>
+                        <span class="card-title">vuex刷新数据丢失</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -745,9 +754,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-09-29
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -756,6 +765,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -771,16 +781,16 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/092839553.html">
+                <a href="/2021/110350482.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="第一篇博客小试牛刀">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="变量提升函数提升，作用域，执行上下文理解">
                         
-                        <span class="card-title">第一篇博客小试牛刀</span>
+                        <span class="card-title">变量提升函数提升，作用域，执行上下文理解</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -791,7 +801,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-03
                             </span>
                         <span class="publish-author">
                             
@@ -801,12 +811,11 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%88%90%E9%95%BF%E7%BB%8F%E5%8E%86/">
-                        <span class="chip bg-color">成长经历</span>
+                    <a href="/tags/javascript/">
+                        <span class="chip bg-color">javascript</span>
                     </a>
                     
                 </div>

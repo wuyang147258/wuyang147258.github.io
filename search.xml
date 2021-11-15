@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>vuex刷新数据丢失</title>
+      <link href="/2021/111550482.html"/>
+      <url>/2021/111550482.html</url>
+      
+        <content type="html"><![CDATA[<p>当数据不是特别多的时候，我们可以将 vuex 中保存的数据保存到 sessionStorage 中</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">//vue 3.0if (sessionStorage.getItem('store')) &#123;  proxy.$store.replaceState(Object.assign(&#123;&#125;, proxy.$store.state, JSON.parse(sessionStorage.getItem('store'))))&#125;//在页面刷新时将vuex里的信息保存到sessionStorage里window.addEventListener('beforeunload', () => &#123;  sessionStorage.setItem('store', JSON.stringify(proxy.$store.state))&#125;)//取出数据let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> vue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>变量提升函数提升，作用域，执行上下文理解</title>
+      <link href="/2021/110350482.html"/>
+      <url>/2021/110350482.html</url>
+      
+        <content type="html"><![CDATA[<h3 id="变量提升函数提升"><a href="#变量提升函数提升" class="headerlink" title="变量提升函数提升"></a>变量提升函数提升</h3><ul><li>变量提升<br>通常 JS 引擎会在正式执行之前先进行一次预编译，在这个过程中，首先将变量声明及函数声明提升至当前作用域的顶端，然后进行接下来的处理。(注：当前流行的 JS 引擎大都对源码进行了编译，由于引擎的不同，编译形式也会有所差异，我们这里说的预编译和提升其实是抽象出来的、易于理解的概念)<br>变量提升后的变量先定义到了 window 上，如果没有赋值先使用这时候变量的值是 undefind</li></ul><pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;  console.log(foo)  var foo = 5&#125;//这里输出结果是undefind并不是defind因为在预编译之后的代码是这样的</code></pre><pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;  var foo  console.log(foo)  foo = 5&#125;</code></pre><ul><li>函数提升</li></ul><pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;  foo()  function foo() &#123;    console.log('可以执行函数') //这边函数是可以打印出这句话的  &#125;&#125;</code></pre><p>这段代码在预编译之后</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;  function foo() &#123;    console.log('可以执行函数')  &#125;  foo()&#125;</code></pre><p>在一个作用域中我们可以使用声明函数的方式，我们也有可能用到函数表达式的方式，如果名字相同怎么办呢</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">function test()&#123;  foo()//2  var foo=funciton()&#123;    console.log(1)  &#125;  foo()//1  function foo()&#123;    console.log(2)  &#125;  foo()//1&#125;</code></pre><p>函数声明的优先级最高会被提升到顶部，然后函数声明会被后面的函数表达式覆盖所以后面的调用都是函数表达式。</p><h3 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h3><ul><li>全局执行上下文<br>在全局代码执行之前会将 window 确定为全局执行上下文。然后对全局的数据进行预处理。var 定义的变量赋值为 undined，添加为 window 属性。function 声明的全局函数添加为 window 的方法。为 this 赋值为 window。最后开始执行全局代码。</li><li><p>函数(局部)执行上下文<br> 函数的执行上下文是在函数被调用的时候创建的。在函数体内代码执行之前，先创建函数执行上下文。1.形参变量==&gt;赋值(实参)2.arguments==&gt;(实参列表)3.var 定义的局部变量初始值为 undefind 添加为函数执行上下文的属性.4.function 声明的方法==&gt;赋值(fun)添加到执行上下文的方法。5.this==&gt;赋值(调用函数的对象)</p><p>理解：<br> 代码执行的时候先创建全局执行作用域，然后进行全局代码的执行。此时执行上下文栈中最底层是 window 执行上下文，当函数被调用时创建函数执行上下文栈。然后函数中代码执行完之后销毁。栈中只剩下 window 执行上下文。<br> 理解递归：</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">var i = 1foo(1)function foo() &#123;  if (i == 4) &#123;    retunrn  &#125;  console.log('fb:' + i)  foo(i + 1)  console.log('fe:' + i)&#125;</code></pre><p>理解这个递归的执行顺序：先创建 window 全局执行上下文，然后全局执行上下文入栈底。输出一次 fb：1。然后继续调用一直到 i 和 4 相等的时候。这个时候输出了 fb:1,fb:2,fb:3。栈中最底层的是 window 最上面是 f4 但是 f4 return 出去了，接着执行 f3 所以打印 fe:3。然后执行 f2 打印 fe:2 最后执行 f1 打印 fe:1 当函数执行完后会被直接销毁，最后栈中只剩下 window 上下文栈。</p></li></ul><h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>1，在编写代码的时候函数的作用域就确定了<br>2，全局作用域，函数作用域：</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> javascript </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>vue2.0 vue3.0数据代理数据劫持</title>
       <link href="/2021/110350482.html"/>
       <url>/2021/110350482.html</url>
@@ -46,7 +84,7 @@
       <link href="/2021/101650482.html"/>
       <url>/2021/101650482.html</url>
       
-        <content type="html"><![CDATA[<h1 id="vue-跨域，同源策略"><a href="#vue-跨域，同源策略" class="headerlink" title="vue 跨域，同源策略"></a>vue 跨域，同源策略</h1><h2 id="同源策略："><a href="#同源策略：" class="headerlink" title="同源策略："></a>同源策略：</h2><p>同原策略就是协议，域名，端口号必须完全相同。因为前端经常会用到 Ajax 请求接口中的数据，Ajax 就遵循同源策略。所以我们就需要解决这个问题。因为我最近在用 node 写接口，然后用 vue 写前端进行渲染。遇到了这个跨域问题，所以我在网上找了很多解决方案。我只能说我现在不是很能理解这些解决方案的意思，以后慢慢理解。</p><h2 id="node-接口端："><a href="#node-接口端：" class="headerlink" title="node 接口端："></a>node 接口端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">// 处理cors跨域/* 全系统设置跨域处理 */// CORS & Preflight requestapp.use((req, res, next) => &#123;  if (req.path !== '/' && !req.path.includes('.')) &#123;    res.set(&#123;      'Access-Control-Allow-Credentials': true,      'Access-Control-Allow-Origin': req.headers.origin || '*',      'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type',      'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',      'Content-Type': 'application/json; charset=utf-8'    &#125;)  &#125;  req.method === 'OPTIONS' ? res.status(204).end() : next()&#125;)</code></pre><h2 id="vue-端："><a href="#vue-端：" class="headerlink" title="vue 端："></a>vue 端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">import axios from 'axios'import qs from 'qs'axios.defaults.withCredentials = true // 允许跨域设置，不然可能因为拿不到cookie而报错axios.defaults.baseURL = 'http://localhost:3000/' /*这里的地址就是刚刚启起来的服务器地址,就是node端服务器的地址 *//*请求拦截*/axios.interceptors.request.use(  config => &#123;    if (config.meth === 'post' && !(config.data instanceof FormData)) &#123;      config.headers = &#123;        'Content-Type': 'application/x-www-form-urlencoded'      &#125;      config.data = qs.stringify(config.data, &#123;        arrayFormat: 'repeat'      &#125;) /*这里是，后端要求传数组的时候做的设置，以前出过错*/    &#125;    return config  &#125;,  error => &#123;    return Promise.reject(error)  &#125;)/* 响应拦截 */axios.interceptors.response.use(  res => &#123;    /*可在这里根据返回的状态码做一些拦截操作*/    return res  &#125;,  err => &#123;    return Promise.resolve(err)  &#125;)export default axios /*记得导出*/</code></pre><p>这两个设置完之后应该就不会出现跨域的问题，反正我测试的接口现在可以用 axios 请求到数据了，虽然我不是非常理解为什么这样写。但是有需求急迫解决这个问题的可以借鉴一下。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="vue-跨域，同源策略"><a href="#vue-跨域，同源策略" class="headerlink" title="vue 跨域，同源策略"></a>vue 跨域，同源策略</h1><h2 id="同源策略："><a href="#同源策略：" class="headerlink" title="同源策略："></a>同源策略：</h2><p>同原策略就是协议，域名，端口号必须完全相同。因为前端经常会用到 Ajax 请求接口中的数据，Ajax 就遵循同源策略。所以我们就需要解决这个问题。因为我最近在用 node 写接口，然后用 vue 写前端进行渲染。遇到了这个跨域问题，所以我在网上找了很多解决方案。我只能说我现在不是很能理解这些解决方案的意思，以后慢慢理解。</p><h2 id="node-接口端："><a href="#node-接口端：" class="headerlink" title="node 接口端："></a>node 接口端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">// 处理cors跨域/* 全系统设置跨域处理 */// CORS & Preflight requestapp.use((req, res, next) => &#123;  if (req.path !== '/' && !req.path.includes('.')) &#123;    res.set(&#123;      'Access-Control-Allow-Credentials': true,      'Access-Control-Allow-Origin': req.headers.origin || '*',      'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type',      'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',      'Content-Type': 'application/json; charset=utf-8'    &#125;)  &#125;  req.method === 'OPTIONS' ? res.status(204).end() : next()&#125;)</code></pre><h2 id="vue-端："><a href="#vue-端：" class="headerlink" title="vue 端："></a>vue 端：</h2><pre class=" language-lang-javascript"><code class="language-lang-javascript">import axios from 'axios'import qs from 'qs'axios.defaults.withCredentials = true // 允许跨域设置，不然可能因为拿不到cookie而报错axios.defaults.baseURL = 'http://localhost:3000/' /*这里的地址就是刚刚启起来的服务器地址,就是node端服务器的地址 *//*请求拦截*/axios.interceptors.request.use(  config => &#123;    if (config.meth === 'post' && !(config.data instanceof FormData)) &#123;      config.headers = &#123;        'Content-Type': 'application/x-www-form-urlencoded'      &#125;      config.data = qs.stringify(config.data, &#123;        arrayFormat: 'repeat'      &#125;) /*这里是，后端要求传数组的时候做的设置，以前出过错*/    &#125;    return config  &#125;,  error => &#123;    return Promise.reject(error)  &#125;)/* 响应拦截 */axios.interceptors.response.use(  res => &#123;    /*可在这里根据返回的状态码做一些拦截操作*/    return res  &#125;,  err => &#123;    return Promise.resolve(err)  &#125;)export default axios /*记得导出*/</code></pre><p>这两个设置完之后应该就不会出现跨域的问题，反正我测试的接口现在可以用 axios 请求到数据了，虽然我不是非常理解为什么这样写。但是有需求急迫解决这个问题的可以借鉴一下。</p><h2 id="vue-端代理处理跨域："><a href="#vue-端代理处理跨域：" class="headerlink" title="vue 端代理处理跨域："></a>vue 端代理处理跨域：</h2><p>在 vue 端可以使用代理服务器进行跨域</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">//在vue.config.js中module.exports = &#123;  devServer: &#123;    port: 8081, // 此处修改你想要的端口号    proxy: &#123;      '/api': &#123;        target: 'http://172.16.3.33:8080',        changeOrigin: true,        pathRewrite: &#123;          '^/api': ''        &#125;      &#125;    &#125;  &#125;&#125;//请求时要加入前缀,例如这个请求const &#123; data: res &#125; = await this.$http.get('api/updateUser/1/update/666')</code></pre><p>代理服务器的原理就是，不同端口进行 ajax 会有同源策略的问题也就是跨域，当我们使用代理服务器，代理服务器的端口号是和 vue 相同的 这样就不会发生跨域。服务器和服务器之间是不会有跨域问题的</p>]]></content>
       
       
       
@@ -119,19 +157,6 @@
             <tag> 成长经历 </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2021/092816107.html"/>
-      <url>/2021/092816107.html</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-lang-bash"><code class="language-lang-bash">$ hexo new "My New Post"</code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-lang-bash"><code class="language-lang-bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-lang-bash"><code class="language-lang-bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-lang-bash"><code class="language-lang-bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     
