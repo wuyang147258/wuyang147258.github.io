@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="vuex刷新数据丢失, tbg">
+    <meta name="keywords" content="数据结构, tbg">
     <meta name="description" content="Try to encourage each other">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>vuex刷新数据丢失 | tbg</title>
+    <title>数据结构 | tbg</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -320,12 +320,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">vuex刷新数据丢失</h1>
+                    <h1 class="description center-align post-title">数据结构</h1>
                 </div>
             </div>
         </div>
@@ -439,13 +439,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/vue/">
-                                <span class="chip bg-color">vue</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -457,7 +453,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-15
+                    2021-11-25
                 </div>
                 
 
@@ -466,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    93
+                    3.1k
                 </div>
                 
 
@@ -483,19 +479,678 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>当数据不是特别多的时候，我们可以将 vuex 中保存的数据保存到 sessionStorage 中</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">//vue 3.0
-if (sessionStorage.getItem('store')) &#123;
-  proxy.$store.replaceState(Object.assign(&#123;&#125;, proxy.$store.state, JSON.parse(sessionStorage.getItem('store'))))
-&#125;
+                <h1 id="javascript-的数据结构"><a href="#javascript-的数据结构" class="headerlink" title="javascript 的数据结构"></a>javascript 的数据结构</h1><h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>·  特点是先入先出  </p>
+<p>  封装队列：  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">   //基于数组操作 
 
-//在页面刷新时将vuex里的信息保存到sessionStorage里
-window.addEventListener('beforeunload', () => &#123;
-  sessionStorage.setItem('store', JSON.stringify(proxy.$store.state))
-&#125;)
-//取出数据
-let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
+        function Queue() &#123;
+            this.items = []
+
+        &#125;
+
+        //方法
+        Queue.prototype = &#123;
+            //向队列尾部添加一个(多个)项
+            enquerue: function(element) &#123;
+                return this.items.push(element)
+            &#125;,
+            //溢出队列的第一项
+            dequeue: function() &#123;
+                return this.items.shift()
+            &#125;,
+            //返回队列中第一个元素
+            front: function() &#123;
+                return this.items[0]
+            &#125;,
+            //队列中不包含任何元素，返回true，否则返回false
+            isEmpty: function() &#123;
+                return this.items.length == 0
+            &#125;,
+            //返回队列包含的元素个数
+            size: function() &#123;
+                return this.items.length
+            &#125;,
+            //将队列中的内容，转成字符串
+            toString: function() &#123;
+                let result = ''
+                for (let i = 0; i < this.items.length; i++) &#123;
+                    result += this.items[i] + ''
+                &#125;
+                return result
+            &#125;
+
+
+        &#125;
 </code></pre>
+<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>· 特点：先入后出  </p>
+<p>封装栈结构  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  //封装栈类
+        function Stack() &#123;
+            //栈中的属性
+            this.items = []
+        &#125;
+
+        Stack.prototype = &#123;
+            //将元素压入栈
+            push: function(element) &#123;
+                this.items.push(element)
+            &#125;,
+             //从栈中取出元素
+            pop: function() &#123;
+                return this.items.pop()
+            &#125;,
+            //查看栈顶元素
+            peek: function() &#123;
+                return this.items[this.items.length - 1]
+            &#125;,
+             //判断栈是否为空
+            isEmpty: function() &#123;
+                return this.items.length == 0
+            &#125;,
+
+            //获取栈中元素的个数
+            size: function() &#123;
+                return this.items.length
+            &#125;,
+            //tostring 方法
+            toString: function() &#123;
+                var resultString = ''
+                for (let i = 0; i < this.items.length; i++) &#123;
+                    resultString += this.items[i] + ''
+                &#125;
+                return resultString
+            &#125;
+        &#125;
+</code></pre>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>1.单向链表：单向链表中一般都有一个头节点，然后下面都是一个一个的节点。每一个节点中都有data和next。data中存储数据，next存储下一个节点的引用。  </p>
+<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125132820517.png" alt="image-20211125132820517"></p>
+<p>封装单向链表：  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  //单向链表
+        function LinkedList() &#123;
+            //节点类
+            function Node(data) &#123;
+                this.data = data
+                this.next = null
+            &#125;
+
+            //属性
+            this.head = null
+            this.length = 0
+
+            //增加方法
+            LinkedList.prototype.append = function(data) &#123;
+                //创建新节点
+                var newNode = new Node(data)
+                    //判断是否是第一个节点
+                if (this.length == 0) &#123;
+                    this.head = newNode
+                &#125; else &#123;
+                    //不是第一个节点
+                    var current = this.head
+                        //判断head指针是否为null,为空向下执行，不为空指向下一个节点,判断是否是最后一个节点
+                    while (current.next) &#123;
+                        current = current.next
+                    &#125;
+
+                    current.next = newNode
+                &#125;
+                this.length++
+            &#125;
+            LinkedList.prototype.toString = function() &#123;
+                    var current = this.head
+                    var listString = ''
+                        //循环获取一个个节点
+                    while (current) &#123;
+                        listString += current.data + ''
+                        current = current.next
+                    &#125;
+                    return listString
+                &#125;
+                //插入方法
+            LinkedList.prototype.insert = function(position, data) &#123;
+                    if (position < 0 || position > this.length) return false
+                        //根据data 创建新节点
+                    var newNode = new Node(data)
+                        //判断插入的位置是否是第一个
+                    if (position == 0) &#123;
+                        newNode.next = this.head
+                        this.head = newNode
+                    &#125; else &#123;
+                        //插入的位置不是第一个
+                        var index = 0
+                        var current = this.head
+                        var previous = null
+                        while (index++ < position) &#123;
+                            previous = current
+                            current = current.next
+                        &#125;
+                        newNode.next = current
+                        previous.next = newNode
+                    &#125;
+                    this.length += 1
+                    return true
+                &#125;
+                //根据索引查找data
+            LinkedList.prototype.get = function(position) &#123;
+                    if (position < 0 || position >= this.length) return null
+                        //获取数据
+                    var current = this.head
+                    var index = 0
+                    while (index++ < position) &#123;
+                        current = current.next
+                    &#125;
+                    return current.data
+                &#125;
+                //根据元素查找元素的索引
+            LinkedList.prototype.indexOf = function(data) &#123;
+                    var index = 0
+                    var current = this.head
+                    while (current) &#123;
+                        if (current.data == data) &#123;
+                            return index
+                        &#125;
+                        current = current.next
+                        index += 1
+                    &#125;
+                    return -1
+                &#125;
+                //根据下标更新
+            LinkedList.prototype.update = function(position, element) &#123;
+                    if (position < 0 || position >= this.length) return false
+                    var current = this.head
+                    var index = 0
+                    while (index++ < position) &#123;
+                        current = current.next
+                    &#125;
+                    current.data = element
+                    return true
+                &#125;
+                //根据索引删除节点
+            LinkedList.prototype.removeAt = function(position) &#123;
+                    if (position < 0 || position >= this.length) return null
+                    var current = this.head
+                    if (position == 0) &#123;
+                        this.head = this.head.next
+                    &#125; else &#123;
+                        var index = 0
+                        var previous = null
+                        while (index++ < position) &#123;
+                            previous = current
+                            current = current.next
+                        &#125;
+                        previous.next = current.next
+                    &#125;
+                    this.length -= 1
+                    return current.data
+                &#125;
+                //根据数据删除节点
+            LinkedList.prototype.remove = function(data) &#123;
+                    var position = this.indexOf(data)
+                    return this.removeAt(position)
+                &#125;
+                //是否为空方法
+            LinkedList.prototype.isEmpty = function() &#123;
+                    return this.length == 0
+                &#125;
+                //size方法 
+            LinkedList.prototype.size = function() &#123;
+                return this.length
+            &#125;
+        &#125;
+</code></pre>
+<p>插入节点  </p>
+<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125134111032.png" alt="image-20211125134111032"></p>
+<p>就插入方法进行讲解：  </p>
+<p>在position=0的时候，head指向的1节点。new(1)中的next存放的应该是1的地址也就是this.head(newNode.next = this.head)</p>
+<p>而this.head中现在应该存放的就不是1的地址了，就应该是new(1)的地址。(this.head=newNode)  </p>
+<p>在position不等于0的时候，2节点中本身存放的是3节点的地址。这时候想要插入一个节点就要让new(2)的next存放3的地址(newNode.next = current) 让2的next存放new(2)的地址( previous.next = newNode) 。此时current存放的应该是3的地址,</p>
+<p>previous中存放的应该是2。</p>
+<p>2.双向链表：  单向链表只可以向下指向，不可以向上指向。双向链表就完美的解决了这个问题。</p>
+<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125140801956.png" alt="image-20211125140801956"></p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">   //封装双向链表
+        function DoublyLinkedList() &#123;
+            //属性
+            this.head = null
+            this.tail = null
+            this.length = 0
+                //内部类
+            function Node(data) &#123;
+                this.data = data
+                this.prex = null
+                this.next = null
+            &#125;
+
+            //常见的操作：方法
+            //向链表尾部追加数据
+            DoublyLinkedList.prototype.append = function(data) &#123;
+                    var newNode = new Node(data)
+                        // 判断是否添加的是第一个节点
+                    if (this.length == 0) &#123;
+                        this.head = newNode
+                        this.tail = newNode
+                    &#125; else &#123;
+                        this.tail.next = newNode
+                        newNode.prev = this.tail
+                        this.tail = newNode
+                    &#125;
+                    this.length += 1
+                &#125;
+                //将链表转成字符串形式
+            DoublyLinkedList.prototype.toString = function() &#123;
+                    return ""
+                &#125;
+                //向前遍历
+            DoublyLinkedList.prototype.forwardString = function() &#123;
+                    var current = this.tail
+                    var resultString = ""
+                    while (current) &#123;
+                        resultString += current.data + ""
+                        current = current.prev
+                    &#125;
+                    return resultString
+                &#125;
+                //向后遍历
+            DoublyLinkedList.prototype.backwordString = function() &#123;
+                    //定义变量
+                    var current = this.head
+                    var resultString = ""
+
+                    //依次向后遍历
+                    while (current) &#123;
+                        resultString += current.data + ""
+                        current = current.next
+                    &#125;
+                    return resultString
+                &#125;
+                //向列表的特定位置插入一个新的节点
+            DoublyLinkedList.prototype.insert = function(position, data) &#123;
+                    if (position < 0 || position > this.length) return false
+
+                    var newNode = new Node(data)
+
+                    if (this.length == 0) &#123;
+                        this.head = newNode
+                        this.tail = newNode
+                    &#125; else &#123;
+                        if (position == 0) &#123;
+                            this.head.prev = newNode
+                            newNode.next = this.head
+                            this.head = newNode
+                        &#125; else if (position == this.length) &#123;
+                            this.tail.next = newNode
+                            newNode.prev = this.tail
+                            this.tail = newNode
+                        &#125; else &#123;
+                            var current = this.head
+                            var previous = null
+                            var index = 0
+                            while (index++ < position) &#123;
+                                current = current.next
+                            &#125;
+                            newNode.next = current
+                            newNode.prev = current.prev
+                            current.prev.next = newNode
+                            current.prev = newNode
+                            console.log(newNode);
+                        &#125;
+                    &#125;
+                    this.length += 1
+                    return true
+                &#125;
+                //get方法
+            DoublyLinkedList.prototype.get = function(position) &#123;
+                if (position < 0 || position >= this.length) return null
+
+                var current = this.head
+                var index = 0
+                while (index++ < position) &#123;
+                    current = current.next
+                &#125;
+                return current.data
+            &#125;
+
+            DoublyLinkedList.prototype.indexOf = function(data) &#123;
+                var current = this.head
+                var index = 0
+
+                //查找和data相同的节点
+                while (current) &#123;
+                    if (current.data == data) &#123;
+                        return index
+                    &#125;
+                    current = current.next
+                    index += 1
+                &#125;
+                return -1
+            &#125;
+            DoublyLinkedList.prototype.update = function(position, newdata) &#123;
+                if (position < 0 || position >= this.length) return false
+                var current = this.head
+                var index = 0
+                while (index++ < position) &#123;
+                    current = current.next
+                &#125;
+                current.data = newdata
+                return true
+            &#125;
+            DoublyLinkedList.prototype.removeAt = function(position) &#123;
+                //越界判断
+                if (position < 0 || position >= this.length) return null
+                    //只有一项
+                var current = this.head
+                if (this.length == 1) &#123;
+                    this.head = null
+                    this.tail = null
+                &#125; else &#123;
+                    //判断删除的是否是第一个节点
+                    if (position == 0) &#123;
+                        this.head.next.prev = null
+                        this.head = this.head.next
+                    &#125; else if (position == this.length - 1) &#123;
+                        current = this.tail
+                        this.tail = this.tail.prev
+                        this.tail.prev.next = null
+                    &#125; else &#123;
+                        var index = 0
+                        while (index++ < position) &#123;
+                            current = current.next
+                        &#125;
+
+                        current.prev.next = current.next
+                        current.next.prev = current.prev
+
+
+                    &#125;
+                &#125;
+                this.length -= 1
+                return current.data
+            &#125;
+            DoublyLinkedList.prototype.remove = function(data) &#123;
+                var index = this.indexOf(data)
+                return this.removeAt(index)
+            &#125;
+            DoublyLinkedList.prototype.isEmpty = function() &#123;
+                return this.length == 0
+            &#125;
+            DoublyLinkedList.prototype.size = function() &#123;
+                    return this.length
+                &#125;
+                //获取链表的第一个元素
+            DoublyLinkedList.prototype.getHead = function() &#123;
+                return this.head.data
+            &#125;
+            DoublyLinkedList.prototype.getTail = function() &#123;
+                return this.tail.data
+            &#125;
+</code></pre>
+<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125142153288.png" alt="image-20211125142153288"></p>
+<p>就插入讲解一下双向链表：  </p>
+<p>1.插入元素是唯一元素：</p>
+<p>让head和tail直接指向newNode</p>
+<p>2.插入是第一个元素(positon=0)但不是唯一元素:  </p>
+<p>让新节点的next指向1节点(newNode.next=this.head),让1节点的prev指向新节点(this.head.prev=newNode)让head指向新节点(this.head=newNode)，</p>
+<p>3插入的是最后一个元素:  </p>
+<p>让新节点prev指向上一个节点(newNode.prev=this.tail)让新节点的next指向null，让上一个节点的next指向新节点(this.tail.next=newNode)，让tail指向newNode(  this.tail = newNode)</p>
+<p>4.让新节点的next指向下一个节点(newNode.next=current)，让新节点的prev指向上一个节点(newNode.prev=current.prev)</p>
+<p>让上一个节点的next指向新节点(current.prev.next=newNode)，让下一个节点的prev指向新节点 (current.prev=newNode)</p>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><pre class=" language-lang-javascript"><code class="language-lang-javascript">   //封装集合类
+         function Set() &#123;
+             //属性
+             this.items = &#123;&#125;
+                 //方法
+             Set.prototype.add = function(value) &#123;
+                 //判断当前集合中是否已经包含了该元素
+                 if (this.has(value)) &#123;
+                     return false
+                 &#125;
+                 this.items[value] = value
+                 return true
+             &#125;
+             Set.prototype.has = function(value) &#123;
+                 //hasOwnProperty判断对象中是否包含这个属性，存在就返回true 不存在返回false
+                 return this.items.hasOwnProperty(value)
+             &#125;
+             Set.prototype.remove = function(value) &#123;
+                 //判断该集合是否包含该元素
+                 if (!this.has(value)) &#123;
+                     return false
+                 &#125;
+
+                 delete this.items[value]
+                 return true
+             &#125;
+             Set.prototype.clear = function() &#123;
+                 this.items = &#123;&#125;
+                 return true
+             &#125;
+             Set.prototype.size = function() &#123;
+                     return Object.keys(this.items).length
+                 &#125;
+                 //获取集合中所有的值
+             Set.prototype.values = function() &#123;
+                     return Object.keys(this.items)
+                 &#125;
+                 //并集
+             Set.prototype.union = function(otherSet) &#123;
+                     var unionSet = new Set()
+                     var values = this.values()
+                     for (var i = 0; i < values.length; i++) &#123;
+                         unionSet.add(values[i])
+                     &#125;
+                     values = otherSet.values()
+                     for (var i = 0; i < values.length; i++) &#123;
+                         unionSet.add(values[i])
+                     &#125;
+
+                     return unionSet
+                 &#125;
+                 //交集
+             Set.prototype.intersection = function(otherSet) &#123;
+                     var intersection = new Set()
+                     var values = this.values()
+                     for (var i = 0; i < values.length; i++) &#123;
+                         var item = values[i]
+                         if (otherSet.has(item)) &#123;
+                             intersection.add(item)
+                         &#125;
+                     &#125;
+                     return intersection
+                 &#125;
+                 //差集
+             Set.prototype.difference = function(otherSet) &#123;
+                     var difference = new Set()
+                     var values = this.values()
+                     for (var i = 0; i < values.length; i++) &#123;
+                         var item = values[i]
+                         if (!otherSet.has(item)) &#123;
+                             difference.add(item)
+                         &#125;
+                     &#125;
+                     return difference
+                 &#125;
+                 //子集
+             Set.prototype.subset = function(otherSet) &#123;
+                 //遍历集合A中所有的元素
+                 var values = this.values()
+                 for (var i = 0; i < values.length; i++) &#123;
+                     var item = values[i]
+                     if (!otherSet.has(item)) &#123;
+                         return false
+                     &#125;
+                 &#125;
+                 return true
+             &#125;
+
+         &#125;
+</code></pre>
+<h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><p>哈希表的应用场景：  </p>
+<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125165619023.png" alt="image-20211125165619023"></p>
+<p>存储很多单词，当输入这个单词时候就可以获取到关于这个单词的一些信息 (翻译等)  </p>
+<p>实现思路：将26个英文字母用自己所创建的编码符对应起来，通过Unicode和霍纳法则得到一个比较大的数字，在经过取余的操作限制下标的范围。然后根据这个下标去哈希表中对应的下标进行存储，因为取余操作可能会有重复。就会产生冲突，(解决冲突的方法有两种。我们这里使用的是链地址法)，所以我们不是直接将元素就存储在哈希表中，而是存储在哈希表中的桶(bucket)中。这个桶可以是链表也可以是数组(这里使用的是数组) </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  function hashFunc(str, size) &#123;
+            //定义hashCode变量
+            var hashCode = 0
+                //霍纳法则
+                //使用Unicode编码
+            for (var i = 0; i < str.length; i++) &#123;
+                //得到比较大的数字
+                hashCode = 37 * hashCode + str.charCodeAt(i)
+            &#125;
+            //取余操作
+            var index = hashCode % size
+            return index
+        &#125;
+</code></pre>
+<p>封装哈希表：  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> function HashTable() &#123;
+            //属性
+            //数组
+            this.storage = []
+                //存放元素的数量
+            this.count = 0
+                //数组的长度
+            this.limit = 7
+
+            //哈希函数
+            HashTable.prototype.hashFunc = function(str, size) &#123;
+                    //定义hashCode变量
+                    var hashCode = 0
+                        //霍纳法则
+                        //使用Unicode编码
+                    for (var i = 0; i < str.length; i++) &#123;
+                        //得到比较大的数字
+                        hashCode = 37 * hashCode + str.charCodeAt(i)
+                    &#125;
+                    //取余操作
+                    var index = hashCode % size
+                    return index
+                &#125;
+                //插入修改操作
+            HashTable.prototype.put = function(key, value) &#123;
+                    //1.根据key 获取对应的index
+                    var index = this.hashFunc(key, this.limit)
+                        //2.根据index取出对应的buket
+                    var bucket = this.storage[index]
+                        //3判断没有桶就创建桶
+                    if (bucket == null) &#123;
+                        bucket = []
+                        this.storage[index] = bucket
+                    &#125;
+                    //4.判断是否是修改数据
+                    for (var i = 0; i < bucket.length; i++) &#123;
+                        //将桶中元素取出
+                        var tuple = bucket[i]
+                            //判断桶中是否有这个key
+                        if (tuple[0] == key) &#123;
+                            tuple[1] = value
+                            return
+                        &#125;
+                    &#125;
+
+                    //添加操作
+                    bucket.push([key, value])
+                    this.count += 1
+
+                    //判断是否需要进行扩容
+                    if (this.count > this.limit * 0.75) &#123;
+                        var newSize = this.limit * 2
+                        var newPrime = this.getPrime(newSize)
+                        this.resize(newPrime)
+                    &#125;
+                &#125;
+                //获取方法
+            HashTable.prototype.get = function(key) &#123;
+                    //根据key获取对应的index
+                    var index = this.hashFunc(key, this.limit)
+                        //获取对应的桶
+                    var bucket = this.storage[index]
+                        //如果桶为空直接返回null
+                    if (bucket == null) return null
+                        //遍历桶查找对应key
+                    for (var i = 0; i < bucket.length; i++) &#123;
+                        var tuple = bucket[i]
+                        if (tuple[0] == key) &#123;
+                            return tuple[1]
+                        &#125;
+                    &#125;
+                    return null
+                &#125;
+                //删除操作
+            HashTable.prototype.delete = function(key) &#123;
+                    var index = this.hashFunc(key, this.limit)
+                    var bucket = this.storage[index]
+                    if (bucket == null) return null
+                    for (var i = 0; i < bucket.length; i++) &#123;
+                        var tuple = bucket[i]
+                        if (tuple[0] == key) &#123;
+                            bucket.splice(i, 1)
+                            this.count--
+                                //删除缩小容量
+                                if (this.limit > 7 && this.count < this.limit * 0.25) &#123;
+                                    var newSize = Math.floor(this.limit / 2)
+                                    var newPrime = this.getPrime(newSize)
+                                    this.resize(newPrime)
+                                &#125;
+                            return tuple[1]
+
+                        &#125;
+                    &#125;
+                    return null
+                &#125;
+                //判断哈希表是否为空
+            HashTable.prototype.isEmpty = function() &#123;
+                    return this.count == 0
+                &#125;
+                //哈希表元素的个数
+            HashTable.prototype.size = function() &#123;
+                return this.count
+            &#125;
+
+            //哈希表的扩容
+            HashTable.prototype.resize = function(newLimit) &#123;
+                //1.保存旧的数组内容
+                var oldStorage = this.storage
+                    //重置所有的属性
+                this.storage = []
+                this.count = 0
+                this.limit = newLimit
+                    //遍历oldStorage所有的桶
+                for (var i = 0; i < oldStorage.length; i++) &#123;
+                    //取出对应的桶
+                    var bucket = oldStorage[i]
+                    if (bucket == null) &#123;
+                        continue
+                    &#125;
+                    for (var j = 0; j < bucket.length; j++) &#123;
+                        var tuple = bucket[j]
+                        this.put(tuple[0], tuple[1])
+                    &#125;
+                &#125;
+            &#125;
+
+            //判断某个数字是否是质数
+            HashTable.prototype.isPrime = function(num) &#123;
+                var temp = parseInt(Math.sqrt(num))
+                for (var i = 2; i <= temp; i++) &#123;
+                    if (num % i == 0) &#123;
+                        return false
+                    &#125;
+                &#125;
+                return true
+            &#125;
+
+            //获取质数的方法
+            HashTable.prototype.getPrime = function(num) &#123;
+                while (!this.isPrime(num)) &#123;
+                    num++
+                &#125;
+                return num
+            &#125;
+        &#125;
+</code></pre>
+<p>如果我们哈希表存储的数据过多，这时候哈希表的效率就会下降。<img src="C:\Users\0\AppData\Local\YNote\data\qq352CAD402BA7703C434A6E66FEB6C8E3\9fdeb0028ae84ea3b4bb08b29e4d04f5\clipboard.png" alt="img"></p>
+<p>所以我们就需要对哈希表进行扩容</p>
+<p><img src="C:\Users\0\AppData\Local\YNote\data\qq352CAD402BA7703C434A6E66FEB6C8E3\f82eb91b1c7f4ffd90c789f1df5cb52e\clipboard.png" alt="img"></p>
 
                 
             </div>
@@ -522,7 +1177,7 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wuyang147258.gitub.io/2021/111550482.html">http://wuyang147258.gitub.io/2021/111550482.html</a>
+                    <a href="http://wuyang147258.gitub.io/2021/11251.html">http://wuyang147258.gitub.io/2021/11251.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -559,11 +1214,7 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/vue/">
-                                    <span class="chip bg-color">vue</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -733,9 +1384,10 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/11251.html">
                     <div class="card-image">
@@ -753,9 +1405,9 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-25
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-25
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -764,6 +1416,7 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -774,13 +1427,13 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/110350482.html">
+                <a href="/2021/111550482.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="变量提升函数提升，作用域，执行上下文理解">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="vuex刷新数据丢失">
                         
-                        <span class="card-title">变量提升函数提升，作用域，执行上下文理解</span>
+                        <span class="card-title">vuex刷新数据丢失</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -791,7 +1444,7 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-03
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-15
                             </span>
                         <span class="publish-author">
                             
@@ -804,8 +1457,8 @@ let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/javascript/">
-                        <span class="chip bg-color">javascript</span>
+                    <a href="/tags/vue/">
+                        <span class="chip bg-color">vue</span>
                     </a>
                     
                 </div>
