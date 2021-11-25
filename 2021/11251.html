@@ -563,7 +563,7 @@
         &#125;
 </code></pre>
 <h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>1.单向链表：单向链表中一般都有一个头节点，然后下面都是一个一个的节点。每一个节点中都有data和next。data中存储数据，next存储下一个节点的引用。  </p>
-<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125132820517.png" alt="image-20211125132820517"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\danxianglianbiao.png" alt="image-20211125132820517"></p>
 <p>封装单向链表：  </p>
 <pre class=" language-lang-javascript"><code class="language-lang-javascript">  //单向链表
         function LinkedList() &#123;
@@ -699,14 +699,14 @@
         &#125;
 </code></pre>
 <p>插入节点  </p>
-<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125134111032.png" alt="image-20211125134111032"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\danxianglianbiaoInsert.png" alt="image-20211125134111032"></p>
 <p>就插入方法进行讲解：  </p>
 <p>在position=0的时候，head指向的1节点。new(1)中的next存放的应该是1的地址也就是this.head(newNode.next = this.head)</p>
 <p>而this.head中现在应该存放的就不是1的地址了，就应该是new(1)的地址。(this.head=newNode)  </p>
 <p>在position不等于0的时候，2节点中本身存放的是3节点的地址。这时候想要插入一个节点就要让new(2)的next存放3的地址(newNode.next = current) 让2的next存放new(2)的地址( previous.next = newNode) 。此时current存放的应该是3的地址,</p>
 <p>previous中存放的应该是2。</p>
 <p>2.双向链表：  单向链表只可以向下指向，不可以向上指向。双向链表就完美的解决了这个问题。</p>
-<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125140801956.png" alt="image-20211125140801956"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\shuangxianglianbiao.png" alt="image-20211125140801956"></p>
 <pre class=" language-lang-javascript"><code class="language-lang-javascript">   //封装双向链表
         function DoublyLinkedList() &#123;
             //属性
@@ -883,7 +883,7 @@
                 return this.tail.data
             &#125;
 </code></pre>
-<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125142153288.png" alt="image-20211125142153288"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\shuangxianglianbaioInsert.png" alt="image-20211125142153288"></p>
 <p>就插入讲解一下双向链表：  </p>
 <p>1.插入元素是唯一元素：</p>
 <p>让head和tail直接指向newNode</p>
@@ -984,7 +984,7 @@
          &#125;
 </code></pre>
 <h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><p>哈希表的应用场景：  </p>
-<p><img src="C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20211125165619023.png" alt="image-20211125165619023"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\hashTable.png" alt="image-20211125165619023"></p>
 <p>存储很多单词，当输入这个单词时候就可以获取到关于这个单词的一些信息 (翻译等)  </p>
 <p>实现思路：将26个英文字母用自己所创建的编码符对应起来，通过Unicode和霍纳法则得到一个比较大的数字，在经过取余的操作限制下标的范围。然后根据这个下标去哈希表中对应的下标进行存储，因为取余操作可能会有重复。就会产生冲突，(解决冲突的方法有两种。我们这里使用的是链地址法)，所以我们不是直接将元素就存储在哈希表中，而是存储在哈希表中的桶(bucket)中。这个桶可以是链表也可以是数组(这里使用的是数组) </p>
 <pre class=" language-lang-javascript"><code class="language-lang-javascript">  function hashFunc(str, size) &#123;
@@ -1148,9 +1148,9 @@
             &#125;
         &#125;
 </code></pre>
-<p>如果我们哈希表存储的数据过多，这时候哈希表的效率就会下降。<img src="C:\Users\0\AppData\Local\YNote\data\qq352CAD402BA7703C434A6E66FEB6C8E3\9fdeb0028ae84ea3b4bb08b29e4d04f5\clipboard.png" alt="img"></p>
+<p>如果我们哈希表存储的数据过多，这时候哈希表的效率就会下降。<img src="/2021/MyBlog\hexoblog\source\img\hash(1" alt="img">.png)</p>
 <p>所以我们就需要对哈希表进行扩容</p>
-<p><img src="C:\Users\0\AppData\Local\YNote\data\qq352CAD402BA7703C434A6E66FEB6C8E3\f82eb91b1c7f4ffd90c789f1df5cb52e\clipboard.png" alt="img"></p>
+<p><img src="/2021/MyBlog\hexoblog\source\img\hash(2" alt="img">.png)</p>
 
                 
             </div>
