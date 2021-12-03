@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>vue技巧</title>
+      <link href="/2021/113050482.html"/>
+      <url>/2021/113050482.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="vue技巧"><a href="#vue技巧" class="headerlink" title="vue技巧"></a>vue技巧</h1><h3 id="vue父组件调用子组件方法"><a href="#vue父组件调用子组件方法" class="headerlink" title="vue父组件调用子组件方法"></a>vue父组件调用子组件方法</h3><pre class=" language-lang-vue"><code class="language-lang-vue">//父组件<template><div father-component>    <Child ref="child"></Child>    <div @click="showChild">        点击按钮显示子组件    </div></div></template><script>import Child from ''export default&#123;    components:&#123;        Child    &#125;,    methods:&#123;        showChild()&#123;            const c=this.$ref.child            //调用子组件方法            c.showChild()        &#125;    &#125;&#125;</script>//子组件<template><div id="child-component">    我是子组件</div></template><script>export default&#123;    data()&#123;        return&#123;            isShow:false        &#125;    &#125;    methods:&#123;    //父组件将要调用的方法        showChild()&#123;            this.isShow=true        &#125;    &#125;&#125;</script></code></pre><h3 id="vue事件代理"><a href="#vue事件代理" class="headerlink" title="vue事件代理"></a>vue事件代理</h3><p>例子：在v-for循环外面调用index  </p><pre class=" language-lang-javascript"><code class="language-lang-javascript"><div @click="onClick">    <li v-for="(item,index) in list" :key="item.id" :data-index="index"></li> </div>methods:&#123;    //在v-for循环的外部获取到当前点击循环的index,使用事件代理    onClick(e)&#123;        let index=e.target.getAttribute('data-index')        //这时候就可以获取到index    &#125;&#125;</code></pre><h3 id="vue代码执行"><a href="#vue代码执行" class="headerlink" title="vue代码执行"></a>vue代码执行</h3><p>详细执行顺序说明<br>在开发中我们还会涉及到props、data、computed、methods、watch等api，这几个常用的api的执行顺序可以结合源码分析；</p><p>以vue2.6为例，在vue/src/core/instance/init.js中有如下组件初始化时的执行代码</p><p><img src="https://img-blog.csdnimg.cn/20190628173716427.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xVTkpJTkdKSUU=,size_16,color_FFFFFF,t_70" alt></p><p>进入initState(vm)方法，如下如所示</p><p><img src="https://img-blog.csdnimg.cn/20190628173723354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xVTkpJTkdKSUU=,size_16,color_FFFFFF,t_70" alt="图片"></p><p>可以知道，在initState方法中，初始化了props、methods、data、computed、watch这些API，且因为initState方法的执行顺序是在callHook(vm，‘beforeCreate’)之后，callHook(vm，‘created’)之前，所以执行顺序是介于beforeCreate与created之间；<br>需要注意的是，如在props、data、computed中定义的变量，在执行时是先把数据存在到内存当中，等到template模板渲染完成后，数据就会从内存写入到模板，取代模板中的模板字符串，完成赋值；<br>执行顺序总结<br>beforeCreate -&gt; state(data、computed等) -&gt; created -&gt; beforeMount -&gt; mounted -&gt; beforeUpdate -&gt; updated -&gt; beforeDestroy -&gt; destroyed<br>当数据变化后，虚拟DOM重新渲染页面前会触发beforeUpdate函数；<br>当虚拟DOM渲染页面，视图更新后，触发updated函数；</p><h3 id="vue通过nextTick获取最新的DOM"><a href="#vue通过nextTick获取最新的DOM" class="headerlink" title="vue通过nextTick获取最新的DOM"></a>vue通过nextTick获取最新的DOM</h3><p>vue 的dom更新是异步的，而且更新是批量</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> vue </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数据结构</title>
       <link href="/2021/11251.html"/>
       <url>/2021/11251.html</url>
@@ -21,7 +40,7 @@
       <link href="/2021/111550482.html"/>
       <url>/2021/111550482.html</url>
       
-        <content type="html"><![CDATA[<p>当数据不是特别多的时候，我们可以将 vuex 中保存的数据保存到 sessionStorage 中</p><pre class=" language-lang-javascript"><code class="language-lang-javascript">//vue 3.0if (sessionStorage.getItem('store')) &#123;  proxy.$store.replaceState(Object.assign(&#123;&#125;, proxy.$store.state, JSON.parse(sessionStorage.getItem('store'))))&#125;//在页面刷新时将vuex里的信息保存到sessionStorage里window.addEventListener('beforeunload', () => &#123;  sessionStorage.setItem('store', JSON.stringify(proxy.$store.state))&#125;)//取出数据let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata</code></pre>]]></content>
+        <content type="html"><![CDATA[<h1 id="使用vuex进行持久层处理"><a href="#使用vuex进行持久层处理" class="headerlink" title="使用vuex进行持久层处理"></a>使用vuex进行持久层处理</h1><p>vuex中的数据是保存在内存当中的，如果浏览器进行刷新，vuex中的数据就会丢失。这时我们就需要进行持久层处理。  </p><p>原理：将需要做持久层的数据保存在浏览器中的localhostStorage或者是sessionStorage中  </p><pre class=" language-lang-javascript"><code class="language-lang-javascript"> //比如说我们存储用户信息 const store=new vuex.Store(&#123;     state:&#123;        userInfo:&#123;&#125;     &#125;,     mutations:&#123;         setUserInfo(state,data)&#123;             state.userInfo=data             //存入localhostStorage中             window.localhostStorage.userInfo=JSON.stringify(state.userInfo)         &#125;     &#125;,     //处理异步     actions:&#123;       loadUserInfo(&#123;commit&#125;)&#123;          //发起get请求           const &#123;data:res&#125;=this.$http.get('/api')           let userData=res           commit('setUserInfo',userData)       &#125;     &#125;   &#125;)</code></pre>]]></content>
       
       
       

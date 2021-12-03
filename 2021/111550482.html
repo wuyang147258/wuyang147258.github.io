@@ -466,7 +466,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    93
+                    159
                 </div>
                 
 
@@ -483,18 +483,32 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>当数据不是特别多的时候，我们可以将 vuex 中保存的数据保存到 sessionStorage 中</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">//vue 3.0
-if (sessionStorage.getItem('store')) &#123;
-  proxy.$store.replaceState(Object.assign(&#123;&#125;, proxy.$store.state, JSON.parse(sessionStorage.getItem('store'))))
-&#125;
+                <h1 id="使用vuex进行持久层处理"><a href="#使用vuex进行持久层处理" class="headerlink" title="使用vuex进行持久层处理"></a>使用vuex进行持久层处理</h1><p>vuex中的数据是保存在内存当中的，如果浏览器进行刷新，vuex中的数据就会丢失。这时我们就需要进行持久层处理。  </p>
+<p>原理：将需要做持久层的数据保存在浏览器中的localhostStorage或者是sessionStorage中  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> //比如说我们存储用户信息
 
-//在页面刷新时将vuex里的信息保存到sessionStorage里
-window.addEventListener('beforeunload', () => &#123;
-  sessionStorage.setItem('store', JSON.stringify(proxy.$store.state))
-&#125;)
-//取出数据
-let sessAllDate = JSON.parse(sessionStorage.getItem('store')).alldata
+ const store=new vuex.Store(&#123;
+     state:&#123;
+        userInfo:&#123;&#125;
+     &#125;,
+     mutations:&#123;
+         setUserInfo(state,data)&#123;
+             state.userInfo=data
+             //存入localhostStorage中
+             window.localhostStorage.userInfo=JSON.stringify(state.userInfo)
+         &#125;
+     &#125;,
+     //处理异步
+     actions:&#123;
+       loadUserInfo(&#123;commit&#125;)&#123;
+          //发起get请求
+           const &#123;data:res&#125;=this.$http.get('/api')
+           let userData=res
+           commit('setUserInfo',userData)
+       &#125;
+
+     &#125;  
+ &#125;)
 </code></pre>
 
                 
