@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="变量提升函数提升，作用域，执行上下文理解, tbg">
+    <meta name="keywords" content="vue虚拟dom源码解析, tbg">
     <meta name="description" content="Try to encourage each other">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>变量提升函数提升，作用域，执行上下文理解 | tbg</title>
+    <title>vue虚拟dom源码解析 | tbg</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -325,7 +325,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">变量提升函数提升，作用域，执行上下文理解</h1>
+                    <h1 class="description center-align post-title">vue虚拟dom源码解析</h1>
                 </div>
             </div>
         </div>
@@ -439,13 +439,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/javascript/">
-                                <span class="chip bg-color">javascript</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -457,7 +453,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-03
+                    2021-12-07
                 </div>
                 
 
@@ -466,7 +462,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    918
+                    3.1k
                 </div>
                 
 
@@ -483,72 +479,416 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="变量提升函数提升"><a href="#变量提升函数提升" class="headerlink" title="变量提升函数提升"></a>变量提升函数提升</h3><ul>
-<li>变量提升<br>通常 JS 引擎会在正式执行之前先进行一次预编译，在这个过程中，首先将变量声明及函数声明提升至当前作用域的顶端，然后进行接下来的处理。(注：当前流行的 JS 引擎大都对源码进行了编译，由于引擎的不同，编译形式也会有所差异，我们这里说的预编译和提升其实是抽象出来的、易于理解的概念)<br>变量提升后的变量先定义到了 window 上，如果没有赋值先使用这时候变量的值是 undefind</li>
-</ul>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  console.log(foo)
-  var foo = 5
-&#125;
-//这里输出结果是undefind并不是defind因为在预编译之后的代码是这样的
-</code></pre>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  var foo
-  console.log(foo)
-  foo = 5
-&#125;
-</code></pre>
-<ul>
-<li>函数提升</li>
-</ul>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  foo()
-  function foo() &#123;
-    console.log('可以执行函数') //这边函数是可以打印出这句话的
-  &#125;
+                <h1 id="vue虚拟dom源码解析"><a href="#vue虚拟dom源码解析" class="headerlink" title="vue虚拟dom源码解析"></a>vue虚拟dom源码解析</h1><p>学过vue的大家都知道，vue使用的是虚拟dom。这是我对虚拟dom的理解和手写自己的虚拟dom。  </p>
+<h3 id="什么是虚拟dom"><a href="#什么是虚拟dom" class="headerlink" title="什么是虚拟dom"></a>什么是虚拟dom</h3><p>什么是虚拟dom<br>用js模拟一颗dom树,放在浏览器内存中.当你要变更时,虚拟dom使用diff算法进行新旧虚拟dom的比较,将变更放到变更队列中,反应到实际的dom树,减少了dom操作.</p>
+<p>虚拟DOM将DOM树转换成一个JS对象树,diff算法逐层比较,删除,添加操作,但是,如果有多个相同的元素,可能会浪费性能,所以,react和vue-for引入key值进行区分.  </p>
+<p>为什么要使用虚拟dom：</p>
+<p>在传统开发中，用JQuery或者原生的JavaScript DOM操作函数对DOM进行频繁操作的时候，浏览器要不停的渲染新的DOM树，导致页面看起来非常卡顿。而Virtual DOM则是虚拟DOM的英文，简单来说，他就是一种可以预先通过JavaScript进行各种计算，把最终的DOM操作计算出来并优化，由于这个DOM操作属于预处理操作，并没有真实的操作DOM，所以叫做虚拟DOM。最后在计算完毕才真正将DOM操作提交，将DOM操作变化反映到DOM树上。</p>
+<h3 id="手写vnode函数"><a href="#手写vnode函数" class="headerlink" title="手写vnode函数"></a>手写vnode函数</h3><p>vnode函数返回一个虚拟dom的数据格式：  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">/* vnode 函数 返回包含虚拟节点基本数据结构的对象 */
+export default function(sel, data, children, text, elm) &#123;
+    return &#123;
+        sel,
+        data,
+        children,
+        text,
+        elm
+    &#125;
 &#125;
 </code></pre>
-<p>这段代码在预编译之后</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  function foo() &#123;
-    console.log('可以执行函数')
-  &#125;
-  foo()
+<h3 id="手写一个简易版的h函数"><a href="#手写一个简易版的h函数" class="headerlink" title="手写一个简易版的h函数"></a>手写一个简易版的h函数</h3><pre class=" language-lang-javascript"><code class="language-lang-javascript">import vnode from "./vnode"; //导入vnode函数
+// 编写一个低配版的h函数，这个函数必须接受3个参数，缺一不可
+// 相当于它的重置功能较弱
+// 也就是说，调用的时候形态必须是下面的三种之一
+/*
+  形态①：h('div', &#123;&#125;, '文字')
+  形态②：h('div', &#123;&#125;, [])
+  形态③：h('div', &#123;&#125;, h())
+*/
+export default function(sel, data, c) &#123;
+
+    //检查这三个元素必须全部传入，没有的话就抛出一个错误
+    if (arguments.length !== 3)
+        throw new Error('没有传入符合的三个参数')
+
+    if (typeof c === 'string' || typeof c === 'number') &#123;
+        //证明此时传入的符合第一种情况,返回一个vnode
+        return vnode(sel, data, undefined, c, undefined)
+    &#125; else if (Array.isArray(c)) &#123;
+
+        //此时c为一个数组，符合第二种情况
+        let children = []
+            // 遍历c
+        for (let i = 0; i < c.length; i++) &#123;
+            // 检查 c[i] 必须是个对象
+            if (!(typeof c[i] === 'object' && c[i].hasOwnProperty('sel')))
+                throw new Error('传入的数组参数中有项不是 h 函数')
+                    // 这里不用执行 c[i]，因为你的调用语句中已经有了执行//每一个数组中都是一个一个的h函数 那时候就已经进行了调用
+                    // 此时只要收集好就行了
+            children.push(c[i])
+        &#125;
+        // 循环结束了，就说明children收集完毕了，此时可以返回虚拟节点了，它是有children属性的
+        return vnode(sel, data, children, undefined, undefined)
+    &#125; else if (typeof c === 'object' && c.hasOwnProperty('sel')) &#123;
+        //证明此时是第三种情况
+        let children = [c]
+        return vnode(sel, data, children, undefined, undefined)
+    &#125; else &#123;
+        throw new Error('参数错误')
+    &#125;
 &#125;
 </code></pre>
-<p>在一个作用域中我们可以使用声明函数的方式，我们也有可能用到函数表达式的方式，如果名字相同怎么办呢</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test()&#123;
-  foo()//2
-  var foo=funciton()&#123;
-    console.log(1)
-  &#125;
-  foo()//1
-  function foo()&#123;
-    console.log(2)
-  &#125;
-  foo()//1
+<h3 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h3><pre class=" language-lang-javascript"><code class="language-lang-javascript">/** src/index.js */
+import h from './mysnabbdom/h'
+const myVNode1 = h('div', &#123;&#125;, [
+    h('p', &#123;&#125;, '哈哈'),
+    h('p', &#123;&#125;, '嘻嘻'),
+    h('p', &#123;&#125;, '呵呵'),
+    h('p', &#123;&#125;, [h('span', &#123;&#125;, 'aa'), h('span', &#123;&#125;, 'bb')]),
+    h('p', &#123;&#125;, h('span', &#123;&#125;, 'A'))
+])
+
+const myVNode2 = h('ul', &#123;&#125;, [
+    h('li', &#123;&#125;, '牛奶'),
+    h('li', &#123;&#125;, '咖啡'),
+    h('li', &#123;&#125;, [h('div', &#123;&#125;, [h('p', &#123;&#125;, '可口可乐'), h('p', &#123;&#125;, '百事可乐')])]),
+    h('li', &#123;&#125;, h('p', &#123;&#125;, '雪碧'))
+])
+console.log(myVNode1)
+</code></pre>
+<p>测试结果：  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">&#123;sel: 'div', data: &#123;…&#125;, children: Array(5), text: undefined, elm: undefined&#125;
+children: Array(5)
+0: &#123;sel: 'p', data: &#123;…&#125;, children: undefined, text: '哈哈', elm: undefined&#125;
+1: &#123;sel: 'p', data: &#123;…&#125;, children: undefined, text: '嘻嘻', elm: undefined&#125;
+2: &#123;sel: 'p', data: &#123;…&#125;, children: undefined, text: '呵呵', elm: undefined&#125;
+3: &#123;sel: 'p', data: &#123;…&#125;, children: Array(2), text: undefined, elm: undefined&#125;
+4: &#123;sel: 'p', data: &#123;…&#125;, children: Array(1), text: undefined, elm: undefined&#125;
+length: 5
+[[Prototype]]: Array(0)
+data: &#123;&#125;
+elm: undefined
+sel: "div"
+text: undefined
+[[Prototype]]: Object
+</code></pre>
+<h3 id="diff算法"><a href="#diff算法" class="headerlink" title="diff算法"></a>diff算法</h3><p><strong><font color="red">diff算法心得</font></strong></p>
+<p>1.最小量更新太厉害啦!真的是最小量更新!当然，key很重要。key是这个节点的唯一标识，告诉diff算法，在更改前后它们是同一个DOM节点<br>2.只有是同一个虚拟节点，才进行精细化比较，否则就是暴力删除旧的、插入新的。延伸问题:如何定义是同一个虚拟节点?答:选择器相同且key相同。<br>3.只进行同层比较，不会进行跨层比较。即使是同一片虚拟节点，但是跨层了。对不起，精细化比较不diff你。而是暴力删除旧的、然后插入新的。</p>
+<p>上面的代码只是让dom元素变成了js对象格式的数据，并没有什么作用。所以我们就需要使用diff算法，patch函数进行虚拟dom的上树。 </p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092054788.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt="image-20211207160441496"></p>
+<p>手写<em>createElement</em> 函数  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">// createElement 函数
+// 真正创建节点 将 vnode 创建为 DOM
+// 是孤儿节点，不进行插入
+export default function createElement(vnode) &#123;
+    // 创建一个 DOM 节点，这个节点现在还是孤儿节点
+    let domNode = document.createElement(vnode.sel)
+        // 有子节点还是有文本？
+    if (
+        vnode.text !== '' && (vnode.children === undefined || vnode.children.length === 0)
+    ) &#123;
+        // 它内部是文字
+        domNode.innerText = vnode.text
+    &#125; else if (Array.isArray(vnode.children) && vnode.children.length > 0) &#123;
+        // 它内部是子节点，就要递归创建节点
+        for (let i = 0; i < vnode.children.length; i++) &#123;
+            // 得到当前这个 child
+            let ch = vnode.children[i]
+                // 创建DOM，一旦调用createElement意味着：创建出DOM了，并且它的elm属性指向了创建出的DOM，但是还没有上树，是一个孤儿节点
+            let chDom = createElement(ch)
+                // 上树
+            domNode.appendChild(chDom)
+        &#125;
+    &#125;
+    // 补充 elm 属性
+    vnode.elm = domNode
+        // 返回 elm，elm是一个纯dom对象
+    return vnode.elm
 &#125;
 </code></pre>
-<p>函数声明的优先级最高会被提升到顶部，然后函数声明会被后面的函数表达式覆盖所以后面的调用都是函数表达式。</p>
-<h3 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h3><ul>
-<li>全局执行上下文<br>在全局代码执行之前会将 window 确定为全局执行上下文。然后对全局的数据进行预处理。var 定义的变量赋值为 undined，添加为 window 属性。function 声明的全局函数添加为 window 的方法。为 this 赋值为 window。最后开始执行全局代码。</li>
-<li><p>函数(局部)执行上下文<br> 函数的执行上下文是在函数被调用的时候创建的。在函数体内代码执行之前，先创建函数执行上下文。1.形参变量==&gt;赋值(实参)2.arguments==&gt;(实参列表)3.var 定义的局部变量初始值为 undefind 添加为函数执行上下文的属性.4.function 声明的方法==&gt;赋值(fun)添加到执行上下文的方法。5.this==&gt;赋值(调用函数的对象)</p>
-<p>理解：<br> 代码执行的时候先创建全局执行作用域，然后进行全局代码的执行。此时执行上下文栈中最底层是 window 执行上下文，当函数被调用时创建函数执行上下文栈。然后函数中代码执行完之后销毁。栈中只剩下 window 执行上下文。<br> 理解递归：</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">var i = 1
-foo(1)
-function foo() &#123;
-  if (i == 4) &#123;
-    retunrn
-  &#125;
-  console.log('fb:' + i)
-  foo(i + 1)
-  console.log('fe:' + i)
+<p>手写patch函数  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">// patch 函数
+import vnode from './vnode'
+import createElement from './createdElement'
+export default function patch(oldVnode, newVnode) &#123;
+    // 判断传入的第一个参数，是DOM节点还是虚拟节点？
+    if (oldVnode.sel === '' || oldVnode.sel === undefined) &#123;
+        // 传入的第一个参数是DOM节点，此时要包装为虚拟节点
+        oldVnode = vnode(
+            oldVnode.tagName.toLowerCase(), &#123;&#125;, [],
+            undefined,
+            oldVnode
+        )
+    &#125;
+    console.log(oldVnode, newVnode)
+        // 判断 oldVnode和newVnode 是不是同一个节点
+    if (oldVnode.key === newVnode.key && oldVnode.sel === newVnode.sel) &#123;
+        console.log('是同一个节点')
+    &#125; else &#123;
+        console.log('不是同一个节点，暴力插入新的，删除旧的')
+        let newVnodeElm = createElement(newVnode)
+        if (oldVnode.elm && newVnodeElm) &#123;
+            // 插入到老节点之前
+            oldVnode.elm.parentNode.insertBefore(newVnodeElm, oldVnode.elm)
+        &#125;
+        // 删除老节点
+        oldVnode.elm.parentNode.removeChild(oldVnode.elm)
+    &#125;
 &#125;
 </code></pre>
-<p>理解这个递归的执行顺序：先创建 window 全局执行上下文，然后全局执行上下文入栈底。输出一次 fb：1。然后继续调用一直到 i 和 4 相等的时候。这个时候输出了 fb:1,fb:2,fb:3。栈中最底层的是 window 最上面是 f4 但是 f4 return 出去了，接着执行 f3 所以打印 fe:3。然后执行 f2 打印 fe:2 最后执行 f1 打印 fe:1 当函数执行完后会被直接销毁，最后栈中只剩下 window 上下文栈。</p>
-</li>
-</ul>
-<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>1，在编写代码的时候函数的作用域就确定了<br>2，全局作用域，函数作用域：</p>
+<p>测试  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">// 测试代码
+import h from './mysnabbdom/h'
+import patch from './mysnabbdom/patch'
+
+const myVnode1 = h('ul', &#123;&#125;, [
+    h('li', &#123;&#125;, '牛奶'),
+    h('li', &#123;&#125;, '咖啡'),
+    h('li', &#123;&#125;, [h('div', &#123;&#125;, [h('p', &#123;&#125;, '可口可乐'), h('p', &#123;&#125;, '百事可乐')])]),
+    h('li', &#123;&#125;, h('p', &#123;&#125;, '雪碧'))
+])
+const container = document.getElementById('container')
+patch(container, myVnode1)
+
+const btn = document.getElementById('btn')
+const myVnode2 = h('section', &#123;&#125;, [
+    h('h1', &#123;&#125;, '我是新的h1'),
+    h('h2', &#123;&#125;, '我是新的h2')
+])
+btn.onclick = function() &#123;
+    patch(myVnode1, myVnode2)
+&#125;
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20210112092211795.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p>当oldVnode和newVnode是一个节点的时候，判断内存中是否是同一个对象。是的话就什么都不用做。不是的话判断newVnode是否有text属性。有的话，判断新节点与旧节点中的text是否相同。相同什么都不用做，不同的话将旧节点的text改为新节点的text  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import createElement from "./createdElement";
+
+export default function pathchNode(oldNode, newNode) &#123;
+    //判断新节点和旧节点是否是内存中同一个对象，是的话不用做任何操作
+    if (oldNode === newNode) return
+        //判断新节点是否含有text属性
+    if (newNode.text != undefined && (newNode.children == undefined || newNode.children.length == 0)) &#123;
+        //此时新节点中有text属性：
+        //判断新节点中text属性和旧节点中text属性是否相同
+        if (newNode.text != oldNode.text) &#123;
+            //此时新节点中的text属性和旧节点中的text属性不同
+            oldNode.elm.innerText = newNode.text
+        &#125;
+    &#125; else &#123;
+        //此时新节点中有chilren属性
+
+    &#125;
+&#125;
+</code></pre>
+<p>这时候有text的情况就处理完毕了，然后就可以处理新节点有chilren的情况了。此时要判断旧节点中是否也有children属性，如果有的话就比较复杂难处理。此时就需要用到四种命中查找。没有chiilren属性的话，直接清空旧节点的text属性并把新节点的children添加到dom中。  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">export default function pathchNode(oldNode, newNode) &#123;
+    //判断新节点和旧节点是否是内存中同一个对象，是的话不用做任何操作
+    if (oldNode === newNode) return
+        //判断新节点是否含有text属性
+    if (newNode.text != undefined && (newNode.children == undefined || newNode.children.length == 0)) &#123;
+        //此时新节点中有text属性：
+      ...
+    &#125; else &#123;
+        //此时新节点中有chilren属性
+        //判断老节点中是否含有chilren属性
+        if (oldNode.children !== undefined && oldNode.children.length > 0) &#123;
+            //此时旧节点中也有chilren属性
+            //...
+        &#125; else &#123;
+            // 老的vnode没有children，新的有
+            // 清空老vnode的内容
+            oldVnode.elm.innerText = ''
+                //遍历新的子节点并上树
+            for (let i = 0; i < newNode.children.length; i++) &#123;
+                let dom = createElement(newNode.children[i])
+                    //dom上树
+                oldNode.elm.appendChild(dom)
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>当旧节点中也有children属性的时候， </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import createElement from "./createdElement";
+
+export default function pathchNode(oldNode, newNode) &#123;
+    //判断新节点和旧节点是否是内存中同一个对象，是的话不用做任何操作
+    if (oldNode === newNode) return
+        //判断新节点是否含有text属性
+    if (newNode.text != undefined && (newNode.children == undefined || newNode.children.length == 0)) &#123;
+       ...
+    &#125; else &#123;
+        //此时新节点中有chilren属性
+        //判断老节点中是否含有chilren属性
+        if (oldNode.children !== undefined && oldNode.children.length > 0) &#123;
+            //此时旧节点中也有chilren属性
+            //定义一个指针un
+            let un = 0
+            for (let i = 0; i < newNode.children.length; i++) &#123;
+                //创建新节点的具体孩子节点
+                let newch = newNode.children[i]
+                    //定义标识，用于判断是否含有此孩子
+                let isExist = false
+                for (let j = 0; j < oldNode.children.length; j++) &#123;
+                    let oldch = oldNode.children[j]
+                        //进行比对
+                    if (newch.sel == oldch.sel && newch.key == oldch.key) &#123;
+                        //此时新节点中的孩子与旧节点中的孩子相同
+                        isExist = true
+                    &#125;
+                    if (!isExist) &#123;
+                        //此时在旧节点中没有找到新节点中的chilren 证明这个chilren是新增加的元素
+                        let dom = createElement(newch)
+                        newch.elm = dom
+                            //判断un是否小于旧节点孩子长度，小于证明在中间添加，不小于在最后面追加
+                        if (un < oldNode.children.length) &#123;
+                            oldVnode.elm.insertBefore(dom, oldVnode.children[un].elm)
+                        &#125; else &#123;
+                            //在最后追加
+                            oldNode.elm.appendChild(dom)
+                        &#125;
+                    &#125; else &#123;
+                        //没有找到不一样的就一直指针下移
+                        un++
+                    &#125;
+                &#125;
+            &#125;
+        &#125; else &#123;
+            // 老的vnode没有children，新的有
+           ...
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>//此时只适用于新增节点的逻辑，更新节点和删除节点都不可以。所以我们需要使用四种查找策略。  </p>
+<p>四种命中查找（经典的diff算法优化策略）：<br>① 新前与旧前<br>② 新后与旧后<br>③ 新后与旧前（<code>此种命中，涉及移动节点，那么旧前指向的节点，移动到旧后之后</code>）<br>④ 新前与旧后（<code>此种命中，涉及移动节点，那么旧后指向的节点，移动到旧前之前</code>）</p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092502679.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092531632.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092531699.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p>情况描述：一开是旧前可以新前进行比对，前两个符合。然后指针下移，旧前到了c位置，新前到了D位置。这时候不符合第一个查找。</p>
+<p>执行第二个查找，新后与旧后，发现也不匹配。执行第三个查找，新后与旧前，还是不符合。执行第四个查找，新前与旧后，还是不符合。但是这时候并没有结束，开始在旧节点中遍历查找新前当前所在的位置(也就是D)，找到了然后设置为undefined。新前指针下移，不符合循环条件。这时候在旧前与旧后间的节点都是要删除的节点。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092641384.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092641368.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092641373.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<p><img src="https://img-blog.csdnimg.cn/20210112092641365.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdodWFuMTAyMA==,size_16,color_FFFFFF,t_70#pic_center" alt></p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">// updateChildren.js
+import createElement from './createdElement'
+import patchVnode from './patchNode'
+
+// 判断是否是同一个虚拟节点
+function checkSameVnode(a, b) &#123;
+    return a.sel === b.sel && a.key === b.key
+&#125;
+
+export default function updateChildren(parentElm, oldCh, newCh) &#123;
+    // console.log('我是updateChildren')
+    // console.log(oldCh, newCh)
+    let oldStartIdx = 0 // 旧前
+    let newStartIdx = 0 // 新前
+    let oldEndIdx = oldCh.length - 1 // 旧后
+    let newEndIdx = newCh.length - 1 // 新后
+    let oldStartVnode = oldCh[oldStartIdx] // 旧前节点
+    let oldEndVnode = oldCh[oldEndIdx] // 旧后节点
+    let newStartVnode = newCh[newStartIdx] // 新前节点
+    let newEndVnode = newCh[newEndIdx] // 新后节点
+    let keyMap = null
+        // console.log(oldStartIdx, newEndIdx)
+        // 开始循环
+    while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) &#123;
+        // console.log('☆')
+        // 首先不是判断命中，而是要掠过已经加undefined标记的东西
+        if (oldStartVnode === null || oldCh[oldStartIdx] === undefined) &#123;
+            oldStartVnode = oldCh[++oldStartIdx]
+        &#125; else if (oldEndVnode === null || oldCh[oldEndIdx] === undefined) &#123;
+            oldEndVnode = oldCh[--oldEndIdx]
+        &#125; else if (newStartVnode === null || newCh[newStartIdx] === undefined) &#123;
+            newStartVnode = newCh[++newStartIdx]
+        &#125; else if (newEndVnode === null || newCh[newEndIdx] === undefined) &#123;
+            newEndVnode = newCh[--newEndIdx]
+        &#125; else if (checkSameVnode(oldStartVnode, newStartVnode)) &#123;
+            // 新前和旧前
+            console.log('① 新前和旧前命中')
+            patchVnode(oldStartVnode, newStartVnode)
+            oldStartVnode = oldCh[++oldStartIdx]
+            newStartVnode = newCh[++newStartIdx]
+        &#125; else if (checkSameVnode(oldEndVnode, newEndVnode)) &#123;
+            // 新后和旧后
+            console.log('② 新后和旧后命中')
+            patchVnode(oldEndVnode, newEndVnode)
+            oldEndVnode = oldCh[--oldEndIdx]
+            newEndVnode = newCh[--newEndIdx]
+        &#125; else if (checkSameVnode(oldStartVnode, newEndVnode)) &#123;
+            // 新后和旧前
+            console.log('③ 新后和旧前命中')
+            patchVnode(oldStartVnode, newEndVnode)
+                // 当③新后与旧前命中的时候，此时要移动节点。移动新后指向的这个节点到老节点旧后的后面
+                // 如何移动节点？只要你插入一个已经在DOM树上的节点，它就会被移动
+            parentElm.insertBefore(oldStartVnode.elm, oldEndVnode.elm.nextSibling)
+            oldStartVnode = oldCh[++oldStartIdx]
+            newEndVnode = newCh[--newEndIdx]
+        &#125; else if (checkSameVnode(oldEndVnode, newStartVnode)) &#123;
+            // 新前和旧后
+            console.log('④ 新前和旧后命中')
+            patchVnode(oldEndVnode, newStartVnode)
+                // 当④新前与旧后命中的时候，此时要移动节点。移动新前指向的这个节点到老节点旧前的前面
+            parentElm.insertBefore(oldEndVnode.elm, oldStartVnode.elm)
+            oldEndVnode = oldCh[--oldEndIdx]
+            newStartVnode = newCh[++newStartIdx]
+        &#125; else &#123;
+            // 四种命中都没有找到
+            // 制作keyMap，缓存
+            if (!keyMap) &#123;
+                keyMap = &#123;&#125;
+                    // 从 oldStartIdx 开始，到oldEndIdx结束，创建keyMap映射对象
+                for (let i = oldStartIdx; i <= oldEndIdx; i++) &#123;
+                    const key = oldCh[i].key
+                    if (key !== undefined) &#123;
+                        keyMap[key] = i
+                    &#125;
+                &#125;
+            &#125;
+            // console.log(keyMap)
+            // 寻找当前这项 newStartIdx 这项在 keyMap 中映射的序号
+            const idxInOld = keyMap[newStartVnode.key]
+            if (idxInOld === undefined) &#123;
+                // 判断，如果idxInOld是undefined 表示它是全新的项
+                // 被加入的项（就是newStartVnode这项）现在不是真实的DOM
+                parentElm.insertBefore(createElement(newStartVnode), oldStartVnode.elm)
+            &#125; else &#123;
+                // 判断，如果idxInOld不是undefined 表示它不是全新的项，需要移动
+                const elmToMove = oldCh[idxInOld]
+                patchVnode(elmToMove, newStartVnode)
+                    // 把这项设置为undefined，表示已经处理完了
+                oldCh[idxInOld] = undefined
+                    // 移动，调用insertBefore
+                parentElm.insertBefore(elmToMove.elm, oldStartVnode.elm)
+            &#125;
+            // 指针下移，只移动新的头
+            newStartVnode = newCh[++newStartIdx]
+        &#125;
+    &#125;
+    // 继续看看有没有剩余的 循环结束了 newStartIdx 还是比 newEndIdx 小
+    if (newStartIdx <= newEndIdx) &#123;
+        // new这里还有剩余节点没有处理
+        // 插入的标杆
+        // const before = newCh[newEndIdx + 1] ? newCh[newEndIdx + 1].elm : null
+        //
+        for (let i = newStartIdx; i <= newEndIdx; i++) &#123;
+            // insertBefore 可以自动识别 null，如果是 null 就会自动排到队尾去。和appendChild是一致的
+            // newCh[i] 还不是真正的DOM，所以需要此处需要调用createElement
+            parentElm.insertBefore(createElement(newCh[i]), oldCh[oldStartIdx].elm)
+        &#125;
+    &#125; else if (oldStartIdx <= oldEndIdx) &#123;
+        // old这里还有剩余节点没有处理
+        // 批量删除oldStartIdx~oldEndIdx之间的项
+        for (let i = oldStartIdx; i <= oldEndIdx; i++) &#123;
+            if (oldCh[i]) &#123;
+                parentElm.removeChild(oldCh[i].elm)
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 
                 
             </div>
@@ -575,7 +915,7 @@ function foo() &#123;
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wuyang147258.gitub.io/2021/110350482.html">http://wuyang147258.gitub.io/2021/110350482.html</a>
+                    <a href="http://wuyang147258.gitub.io/2021/12071.html">http://wuyang147258.gitub.io/2021/12071.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -612,11 +952,7 @@ function foo() &#123;
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/javascript/">
-                                    <span class="chip bg-color">javascript</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -786,62 +1122,18 @@ function foo() &#123;
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/110350482.html">
+                <a href="/2021/12071.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="vue2.0 vue3.0数据代理数据劫持">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="vue虚拟dom源码解析">
                         
-                        <span class="card-title">vue2.0 vue3.0数据代理数据劫持</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-03
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            wy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/vue/">
-                        <span class="chip bg-color">vue</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/102150482.html">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="关于axios各种请求方式的传参总结">
-                        
-                        <span class="card-title">关于axios各种请求方式的传参总结</span>
+                        <span class="card-title">vue虚拟dom源码解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -852,7 +1144,45 @@ function foo() &#123;
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            wy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/120350482.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="js技巧">
+                        
+                        <span class="card-title">js技巧</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-03
                             </span>
                         <span class="publish-author">
                             
@@ -865,8 +1195,8 @@ function foo() &#123;
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/vue/">
-                        <span class="chip bg-color">vue</span>
+                    <a href="/tags/javasript/">
+                        <span class="chip bg-color">javasript</span>
                     </a>
                     
                 </div>

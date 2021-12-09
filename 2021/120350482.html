@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="变量提升函数提升，作用域，执行上下文理解, tbg">
+    <meta name="keywords" content="js技巧, tbg">
     <meta name="description" content="Try to encourage each other">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>变量提升函数提升，作用域，执行上下文理解 | tbg</title>
+    <title>js技巧 | tbg</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -320,12 +320,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">变量提升函数提升，作用域，执行上下文理解</h1>
+                    <h1 class="description center-align post-title">js技巧</h1>
                 </div>
             </div>
         </div>
@@ -441,8 +441,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/javascript/">
-                                <span class="chip bg-color">javascript</span>
+                            <a href="/tags/javasript/">
+                                <span class="chip bg-color">javasript</span>
                             </a>
                         
                     </div>
@@ -457,7 +457,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-03
+                    2021-12-03
                 </div>
                 
 
@@ -466,7 +466,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    918
+                    380
                 </div>
                 
 
@@ -483,72 +483,77 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="变量提升函数提升"><a href="#变量提升函数提升" class="headerlink" title="变量提升函数提升"></a>变量提升函数提升</h3><ul>
-<li>变量提升<br>通常 JS 引擎会在正式执行之前先进行一次预编译，在这个过程中，首先将变量声明及函数声明提升至当前作用域的顶端，然后进行接下来的处理。(注：当前流行的 JS 引擎大都对源码进行了编译，由于引擎的不同，编译形式也会有所差异，我们这里说的预编译和提升其实是抽象出来的、易于理解的概念)<br>变量提升后的变量先定义到了 window 上，如果没有赋值先使用这时候变量的值是 undefind</li>
-</ul>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  console.log(foo)
-  var foo = 5
+                <h1 id="js技巧"><a href="#js技巧" class="headerlink" title="js技巧"></a>js技巧</h1><h3 id="递归拼接树形结构"><a href="#递归拼接树形结构" class="headerlink" title="递归拼接树形结构"></a>递归拼接树形结构</h3><p>将平级结构转为树形结构  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">const rootList=[
+  &#123; id: 1, parent: null, text: 菜单1 &#125;,
+  &#123; id: 11, parent: 1, text: 菜单1-1 &#125;,
+  &#123; id: 111, parent: 11, text: 菜单1-1-1 &#125;,
+  &#123; id: 112, parent: 11, text: 菜单1-1-2 &#125;,
+  &#123; id: 12, parent: 1, text: 菜单1-2 &#125;,
+  &#123; id: 2, parent: null, text: 菜单2 &#125;,
+  &#123; id: 21, parent: 2, text: 菜单2-1 &#125;,
+  &#123; id: 22, parent: 2, text: 菜单2-2 &#125;,
+]
+
+function getTreeList(rootList,id,list)&#123;
+    //遍历整个数组让元素中parent==id的元素放入list中
+    for(item of rootList)&#123;
+        if(item.parent==id)&#123;
+            list.push(item)
+        &#125;
+    &#125;
+
+    for(let i of list)&#123;
+        i.children=[]
+        getTreeList(rootList,i.id,i.children)
+        if(i.children.length==0)&#123;
+            delete i.children
+        &#125;
+    &#125;
+    return list
 &#125;
-//这里输出结果是undefind并不是defind因为在预编译之后的代码是这样的
+
+let test=getTreeList(rootList,null,[])
 </code></pre>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  var foo
-  console.log(foo)
-  foo = 5
+<h3 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h3><p>节流就是让同一操作在一段时间内只发生一次，不连续发生。  </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">function throttle (fn)&#123;
+    let timer=null
+    return function()&#123;
+        if(timer)&#123;
+            return
+        &#125;
+        timer==setTimeout(()=>&#123;
+            fn()
+        &#125;,2000)
+    &#125;
 &#125;
+
+box.addEventListener('click',throttle(function(e)&#123;
+    console.log('1')
+&#125;))
 </code></pre>
-<ul>
-<li>函数提升</li>
-</ul>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  foo()
-  function foo() &#123;
-    console.log('可以执行函数') //这边函数是可以打印出这句话的
-  &#125;
-&#125;
+<h3 id="防抖"><a href="#防抖" class="headerlink" title="防抖"></a>防抖</h3><pre class=" language-lang-javascript"><code class="language-lang-javascript"> function debounce(fn)&#123;
+     let timer=null
+     return function(e)&#123;
+         if(timer)&#123;
+             clearTimeout(timer)
+         &#125;
+         timer=setTimeout(()=>&#123;
+             fn.apply(this,arguments)
+         &#125;,delay)
+     &#125; 
+ &#125;
+
+
+input.addEventListener('input',debounce(function(event)&#123;
+    console.log('发送搜索请求')
+&#125;, 500))
 </code></pre>
-<p>这段代码在预编译之后</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test() &#123;
-  function foo() &#123;
-    console.log('可以执行函数')
-  &#125;
-  foo()
-&#125;
-</code></pre>
-<p>在一个作用域中我们可以使用声明函数的方式，我们也有可能用到函数表达式的方式，如果名字相同怎么办呢</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">function test()&#123;
-  foo()//2
-  var foo=funciton()&#123;
-    console.log(1)
-  &#125;
-  foo()//1
-  function foo()&#123;
-    console.log(2)
-  &#125;
-  foo()//1
-&#125;
-</code></pre>
-<p>函数声明的优先级最高会被提升到顶部，然后函数声明会被后面的函数表达式覆盖所以后面的调用都是函数表达式。</p>
-<h3 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h3><ul>
-<li>全局执行上下文<br>在全局代码执行之前会将 window 确定为全局执行上下文。然后对全局的数据进行预处理。var 定义的变量赋值为 undined，添加为 window 属性。function 声明的全局函数添加为 window 的方法。为 this 赋值为 window。最后开始执行全局代码。</li>
-<li><p>函数(局部)执行上下文<br> 函数的执行上下文是在函数被调用的时候创建的。在函数体内代码执行之前，先创建函数执行上下文。1.形参变量==&gt;赋值(实参)2.arguments==&gt;(实参列表)3.var 定义的局部变量初始值为 undefind 添加为函数执行上下文的属性.4.function 声明的方法==&gt;赋值(fun)添加到执行上下文的方法。5.this==&gt;赋值(调用函数的对象)</p>
-<p>理解：<br> 代码执行的时候先创建全局执行作用域，然后进行全局代码的执行。此时执行上下文栈中最底层是 window 执行上下文，当函数被调用时创建函数执行上下文栈。然后函数中代码执行完之后销毁。栈中只剩下 window 执行上下文。<br> 理解递归：</p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">var i = 1
-foo(1)
-function foo() &#123;
-  if (i == 4) &#123;
-    retunrn
-  &#125;
-  console.log('fb:' + i)
-  foo(i + 1)
-  console.log('fe:' + i)
-&#125;
-</code></pre>
-<p>理解这个递归的执行顺序：先创建 window 全局执行上下文，然后全局执行上下文入栈底。输出一次 fb：1。然后继续调用一直到 i 和 4 相等的时候。这个时候输出了 fb:1,fb:2,fb:3。栈中最底层的是 window 最上面是 f4 但是 f4 return 出去了，接着执行 f3 所以打印 fe:3。然后执行 f2 打印 fe:2 最后执行 f1 打印 fe:1 当函数执行完后会被直接销毁，最后栈中只剩下 window 上下文栈。</p>
-</li>
-</ul>
-<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>1，在编写代码的时候函数的作用域就确定了<br>2，全局作用域，函数作用域：</p>
+<h3 id="js事件循环机制"><a href="#js事件循环机制" class="headerlink" title="js事件循环机制"></a>js事件循环机制</h3><p><img src="https://gitee.com/ycwuyang/pic-go/raw/master/img/image-20211203153415420.png" alt="image-20211203153415420"></p>
+<p>宏任务和微任务：</p>
+<p><img src="https://gitee.com/ycwuyang/pic-go/raw/master/img/image-20211203145240346.png" alt="image-20211203145240346"></p>
+<p><img src="https://gitee.com/ycwuyang/pic-go/raw/master/img/image-20211203145305440.png" alt="image-20211203145305440"></p>
+<p>script 中代码先入执行栈，在栈内先执行同步代码。如果遇到异步代码，判断是微任务还是宏任务。然后异步任务进入任务队列。当所有进入队列的微任务完成之后。一次的事件循环结束。</p>
 
                 
             </div>
@@ -575,7 +580,7 @@ function foo() &#123;
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wuyang147258.gitub.io/2021/110350482.html">http://wuyang147258.gitub.io/2021/110350482.html</a>
+                    <a href="http://wuyang147258.gitub.io/2021/120350482.html">http://wuyang147258.gitub.io/2021/120350482.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -613,8 +618,8 @@ function foo() &#123;
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/javascript/">
-                                    <span class="chip bg-color">javascript</span>
+                                <a href="/tags/javasript/">
+                                    <span class="chip bg-color">javasript</span>
                                 </a>
                             
                         </div>
@@ -790,13 +795,13 @@ function foo() &#123;
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/110350482.html">
+                <a href="/2021/12071.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="vue2.0 vue3.0数据代理数据劫持">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="vue虚拟dom源码解析">
                         
-                        <span class="card-title">vue2.0 vue3.0数据代理数据劫持</span>
+                        <span class="card-title">vue虚拟dom源码解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -807,7 +812,7 @@ function foo() &#123;
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-03
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-12-07
                         </span>
                         <span class="publish-author">
                             
@@ -816,14 +821,6 @@ function foo() &#123;
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/vue/">
-                        <span class="chip bg-color">vue</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -835,13 +832,13 @@ function foo() &#123;
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/102150482.html">
+                <a href="/2021/113050482.html">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="关于axios各种请求方式的传参总结">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="vue技巧">
                         
-                        <span class="card-title">关于axios各种请求方式的传参总结</span>
+                        <span class="card-title">vue技巧</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -852,7 +849,7 @@ function foo() &#123;
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-30
                             </span>
                         <span class="publish-author">
                             
