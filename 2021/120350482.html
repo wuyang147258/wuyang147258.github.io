@@ -466,7 +466,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    5.5k
                 </div>
                 
 
@@ -548,7 +548,9 @@
       &#125;
        demo=()=>&#123;
         const isHot=this.state.isHot
-        this.setState(&#123;isHot:!isHot&#125;)
+        this.setState(&#123;isHot:!isHot&#125;,()=>&#123;
+            //这里可以加一个回调
+        &#125;)
     &#125;
     &#125;
     ReactDOM.render(<MyComponent/>,document.getElementById('test'))
@@ -558,6 +560,13 @@
 <li>组件中自定义的方法中this为undefined，可以使用箭头函数</li>
 <li>使用setState直接设置状态机，如果状态机中没有此状态就创建一个新的。但是一般需要进行状态的初始化</li>
 </ul>
+<p>setState的第二种写法：</p>
+<p>因为setState是一个异步任务，在修改后不会立马显示。所以在setState中有一个回调</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//函数式的setState
+this.setState((state,props)=>&#123;
+    return &#123;count:state.count+1 &#125;
+&#125;)
+</code></pre>
 <h3 id="组件中三大属性props"><a href="#组件中三大属性props" class="headerlink" title="组件中三大属性props"></a>组件中三大属性props</h3><p>批量转入props</p>
 <pre class=" language-lang-javascript"><code class="language-lang-javascript">  class Person extends React.Component&#123;
       render()&#123;
@@ -855,19 +864,824 @@ name=(data)=>&#123;&#125;
 <li><p>配置多个代理</p>
 <p>1.新键setupProxy.js文件</p>
 <p>这个写法和vue 中的差不多  </p>
-<pre class=" language-lang-javascript"><code class="language-lang-javascript">const proxy=require('http-proxy-middleware')
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123;createProxyMiddleware&#125;=require('http-proxy-middleware')
 
 module.exports=function (app)&#123;
     app.use(
-    proxy('/api1')
-        target:'http://localhost:5000',
-        changeOrigin:true,
-        pathRewrite:&#123;'^/api1':''&#125;
+   '/api',
+   createProxyMiddleware(&#123;
+     target:'http://localhost:5000',
+     changeOrigin:true,
+   &#125;)
   )
 &#125;
 </code></pre>
 </li>
 </ul>
+<h3 id="消息发布与订阅"><a href="#消息发布与订阅" class="headerlink" title="消息发布与订阅"></a>消息发布与订阅</h3><p>功能：用于兄弟组件之间的通信</p>
+<p>下载 cnpm i pubsub-js这个js库</p>
+<p>传出组件中发布消息， 传入组件中订阅消息</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//一般在componentDidMount组件初始化的时候接收组件通信的数据
+componentDidMount() &#123;
+    //订阅消息
+    PubSub.subscribe('atguigui', (msg, data) => &#123;
+      this.setState(data)
+    &#125;)
+  &#125;
+</code></pre>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//发布消息
+  PubSub.publish('atguigui', &#123; isFirst: false, isLoading: true &#125;)
+</code></pre>
+<h3 id="路由的基本使用"><a href="#路由的基本使用" class="headerlink" title="路由的基本使用"></a>路由的基本使用</h3><p> 安装 5版本 cnpm i react-router-dom@5.2.0</p>
+<p>5版本中的用法：</p>
+<p>先用<BrowserRouter><BrowserRouter>包裹住所有组件放置的App</BrowserRouter></BrowserRouter></p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> <BrowserRouter>
+    <App />
+ </BrowserRouter>
+</code></pre>
+<p>链接标签的使用：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">   <Link className='list-group-item' to="/about">About</Link>
+   <Link className='list-group-item' to="/home">Home</Link>
+</code></pre>
+<p>注册路由：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">
+    <Route path="/about" component=&#123;About&#125;/>
+    <Route path="/home" component=&#123;Home&#125;/>
+</code></pre>
+<ul>
+<li><p>NavLink的使用  </p>
+<p>当你点击NavLInk的时候会自动添加一个类名 </p>
+<p>可以设置avtiveClassName 当点击这个路由链接的时候就添加这个类名</p>
+<p>NavLink 默认添加的类名是active</p>
+</li>
+</ul>
+<ul>
+<li><p>switch 的使用</p>
+<p>在注册路由的外边包裹一层switch 之后匹配到路由组件之后就不会向下进行匹配了。</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  <Switch>
+               <Route path="/about" component=&#123;About&#125;/>
+               <Route path="/home" component=&#123;Home&#125;/>
+  </Switch>
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>解决样式冲突的问题</p>
+<p>当路由是多级路由时，并且刷新之后样式会丢失</p>
+<p>解决方案：</p>
+<p>使用绝对路径</p>
+</li>
+</ul>
+<ul>
+<li><p>路由的模糊匹配与精准匹配</p>
+<p>默认开启的是模糊匹配</p>
+<p>exact={true}  开启精准匹配</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Route exact=&#123;true&#125; path="/about" component=&#123;About&#125;/>
+<Route exact=&#123;true&#125; path="/home" component=&#123;Home&#125;/>
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>Redirect的使用</p>
+<p>重定向，如果什么都没有匹配到的情况下最后就去到Redirect 指向的路径</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Route exact=&#123;true&#125; path="/about" component=&#123;About&#125;/>
+<Route exact=&#123;true&#125; path="/home" component=&#123;Home&#125;/>
+<Redirect to="/about"/>
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>嵌套路由</p>
+<p>嵌套路由下面要加上一级路由的名字，而且一级路由不要开启精准匹配</p>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> <li>
+     <NavLink to="/home/news">News</NavLink>
+  </li>
+  <li>
+      <NavLink to="/home/message">Message</NavLink>
+  </li>
+</code></pre>
+<ul>
+<li><p>向路由组件传递params参数</p>
+<p>在路由链接上传入进去需要传递的参数</p>
+</li>
+</ul>
+<p>这里传递过去的是id，和title</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  <Link to=&#123;`/home/message/detail/$&#123;item.id&#125;/$&#123;item.title&#125;`&#125;>&#123;item.title&#125;</Link>
+</code></pre>
+<p>在声明路由的地方标注需要传递的参数</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  <Route path="/home/message/detail/:id/:title" component=&#123;Detail&#125; />
+</code></pre>
+<p>在路由组件中使用传递过来的参数</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  const &#123; id, title &#125; = this.props.match.params
+</code></pre>
+<ul>
+<li><p>向路由组件传递search参数</p>
+<p>1.在路由链接上传入进去需要传递的参数</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  &#123;/* 向路由组件传递search 参数 */&#125;
+<Link to=&#123;`/home/message/detail/?id=$&#123;item.id&#125;&title=$&#123;item.title&#125;`&#125;>&#123;item.title&#125;</Link>
+</code></pre>
+<p>2.search 在声明路由的时候不需要进行标注</p>
+<p>3.接收参数的时候需要引入qs进行字符串的处理</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> const &#123; search &#125; = this.props.location
+ const &#123; id, title &#125; = qs.parse(search.slice(1))
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>向路由组件传递state参数</p>
+<p>在地址栏上不显示传递的参数,刷新后参数不会丢失</p>
+<p>1.在路由链接上传入进入需要传递的参数</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"> <Link to=&#123;&#123; pathname: '/home/message/detail', state: &#123; id: item.id, title: item.title &#125; &#125;&#125;>&#123;item.title&#125;</Link>
+</code></pre>
+<p>2.state 参数在声明路由的时候不需要进行标注</p>
+<p>3.接收参数</p>
+<p>如果没有传递的话默认就为空对象</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">const &#123; id, title &#125; = this.props.location.state || &#123;&#125;
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>编程式路由导航</p>
+<p>1.push 跳转  带有历史浏览记录</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">this.props.history.push(`/home/message/detail/$&#123;id&#125;/$&#123;title&#125;`)
+</code></pre>
+<p>2.replace跳转</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">this.props.history.replace(`/home/message/detail/$&#123;id&#125;/$&#123;title&#125;`)
+</code></pre>
+</li>
+</ul>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220221164119900.png" alt="image-20220221164119900"></p>
+<p>编程式前进</p>
+<p>this.props.history.goForward()</p>
+<p>编程式后退</p>
+<p>this.props.history.goBack()</p>
+<p>编程式定位</p>
+<p>this.props.history.go(前进或者后退的页数)  负数是后退</p>
+<ul>
+<li><p>withRouter的使用</p>
+<p>withRouter 可以加工一般组件变为路由组件。为一般组件加上路由得api</p>
+</li>
+</ul>
+<h3 id="antd-UI组件库的使用"><a href="#antd-UI组件库的使用" class="headerlink" title="antd UI组件库的使用"></a>antd UI组件库的使用</h3><p>ant-design 国内蚂蚁金服</p>
+<p>1.<a target="_blank" rel="noopener" href="https://ant.design/index-cn">https://ant.design/index-cn</a></p>
+<h3 id="redux状态管理"><a href="#redux状态管理" class="headerlink" title="redux状态管理"></a>redux状态管理</h3><p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220224113447322.png" alt="image-20220224113447322"></p>
+<ul>
+<li><p>redux 精简版基本使用</p>
+<ol>
+<li><p>先创建store.js 文件</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//引入createStore，专门用于创建redux 中最为核心的store对象
+import &#123; createStore &#125; from 'redux'
+//引入为Count 组件服务的reducer
+import countReducer from './count_reducer'
+
+export default createStore(countReducer)
+</code></pre>
+</li>
+<li><p>创建专门为需要进行状态管理的组件的js文件</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">/* 1.该文件是用于创建一个为Count组件服务的reducer，reducer 本身就是一个函数
+  2.reducer函数会接收到两个参数，分别是之前的状态和动作对象
+*/
+const initState=0
+export default function count_reducer ( pre=initState,aciton)&#123;
+  const &#123;type,data&#125;=aciton
+  switch (type) &#123;
+    case 'increment':
+     return  pre+data
+     case 'decrement':
+       return  pre-data
+    default:
+      return pre
+  &#125;
+&#125;
+</code></pre>
+</li>
+<li><p>在组件中使用 store.getState()获取状态</p>
+<p>使用store.dispath() 进行状态的更改</p>
+<p>因为状态更改后不会自己更新组件 需要调用store.subscribe()去更新视图</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import React, &#123; Component &#125; from 'react'
+//引入store
+import store from '../redux/store'
+export default class Count extends Component &#123;
+ componentDidMount() &#123;
+   //检测redux中状态的变化，只要变化就调用render  ！重要
+   store.subscribe(() => &#123;
+     this.setState(&#123;&#125;)
+   &#125;)
+ &#125;
+ increment = () => &#123;
+   const &#123; value &#125; = this.selectNumber
+   // const &#123; count &#125; = this.state
+   // this.setState(&#123; count: count + value * 1 &#125;)
+   store.dispatch(&#123; type: 'increment', data: value * 1 &#125;)
+ &#125;
+ decrement = () => &#123;
+   const &#123; value &#125; = this.selectNumber
+   store.dispatch(&#123; type: 'decrement', data: value * 1 &#125;)
+ &#125;
+ incrementIfOdd = () => &#123;
+
+ &#125;
+ incrementAsync = () => &#123;
+
+ &#125;
+ render() &#123;
+   return (
+     <div>
+       <h1>当前求和为：&#123;store.getState()&#125;</h1>
+       <select ref=&#123;c => this.selectNumber = c&#125;>
+         <option value="1">1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+       </select>
+       <button onClick=&#123;this.increment&#125;>+</button>
+       <button onClick=&#123;this.decrement&#125;>-</button>
+       <button onClick=&#123;this.incrementIfOdd&#125;>当前求和为奇数再加</button>
+       <button onClick=&#123;this.incrementAsync&#125;>异步加</button>
+     </div>
+   )
+ &#125;
+&#125;
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>完整版的Redux</p>
+<p>比精简版的多了命名文件 和aciton文件</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">/* 该模块是用于定义aciton 对象中type 类型的常量值 */
+
+export const INCREMENT='increment'
+export const DECREMENT='decrement'
+</code></pre>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">/* 该文件专门为Count组件生成action对象 */
+import store from '../redux/store'
+import &#123;INCREMENT,DECREMENT&#125; from './constant'
+export  function createIncrementAction(data)&#123;
+    return &#123;
+      type:INCREMENT,
+      data
+    &#125;
+&#125;
+
+//同步aciton 返回值是一个对象
+export  function createDecrementAction(data)&#123;
+  return &#123;
+    type:DECREMENT,
+    data
+  &#125;
+&#125;
+</code></pre>
+<ul>
+<li><p>异步的Redux</p>
+<p>返回的aciton 是一个函数</p>
+<p>还需要下载 cnpm i redux-thunk</p>
+<p>在store文件中使用</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//引入createStore，专门用于创建redux 中最为核心的store对象
+import &#123; createStore,applyMiddleware &#125; from 'redux'
+//引入为Count 组件服务的reducer
+import countReducer from './count_reducer'
+//引入redux-thunk 开启异步
+import thunk from 'redux-thunk'
+export default createStore(countReducer,applyMiddleware(thunk))
+</code></pre>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  //所谓的异步action 就是值aciton 的值为函数
+  export const createIncrementAsyncAciton =(data,time)=>&#123;
+    console.log(1);
+    return ()=>&#123;
+      setTimeout(()=>&#123;
+        store.dispatch(createIncrementAction(data))
+      &#125;,time)
+    &#125;
+  &#125;
+</code></pre>
+<ul>
+<li>react-redux 模型图</li>
+</ul>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220225120743403.png" alt="image-20220225120743403"></p>
+<p>基本使用方法：</p>
+<p>思路：创建Count容器放置在App中。 在Count容器中引入Count的ui组件。用connect将count和redux连接起来</p>
+<p>函数返回的对象中的key就座位传递给UI组件props的key value就座位传递给UI组件中的value-传递状态</p>
+<p>在APP.jsx中使用Count 容器的时候 要给容器传入store</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import React, &#123; Component &#125; from 'react'
+import Count from './containers/Count'
+import store from './component/redux/store'
+export default class App extends Component &#123;
+  render() &#123;
+    return (
+      <div>
+        <Count store=&#123;store&#125; />
+      </div>
+    )
+  &#125;
+&#125;
+</code></pre>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//引入Count的UI组件
+import CountUI from '../../component/Count'
+
+//引入connect 用于连接UI组件与redux
+import &#123; connect &#125; from 'react-redux'
+import &#123; createIncrementAction, createDecrementAction, createIncrementAsyncAciton &#125; from '../../component/redux/count_aciton'
+
+//函数返回的对象中的key就座位传递给UI组件props的key value就座位传递给UI组件中的value-传递状态
+function mapStateToProps(state) &#123;
+  return &#123; count: state &#125;
+&#125;
+
+function mapDispatchToProps(dispatch) &#123;
+  return &#123;
+    jia: (number) => &#123;
+      dispatch(createIncrementAction(number))
+    &#125;,
+    jian: (number) => &#123;
+      dispatch(createDecrementAction(number))
+    &#125;,
+    jianAsync: (number, time) => &#123;
+      dispatch(createIncrementAsyncAciton(number, time))
+    &#125;
+  &#125;
+&#125;
+//创建Count的容器组件 
+const CountContainer = connect(mapStateToProps, mapDispatchToProps)(CountUI)
+
+export default CountContainer
+</code></pre>
+<p>在countUI中不需要直接接触redux</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import React, &#123; Component &#125; from 'react'
+
+export default class Count extends Component &#123;
+
+  increment = () => &#123;
+    const &#123; value &#125; = this.selectNumber
+    this.props.jia(value * 1)
+  &#125;
+  decrement = () => &#123;
+    const &#123; value &#125; = this.selectNumber
+    this.props.jian(value * 1)
+
+  &#125;
+  incrementIfOdd = () => &#123;
+
+  &#125;
+  incrementAsync = () => &#123;
+    const &#123; value &#125; = this.selectNumber
+    this.props.jianAsync(value * 1, 500)
+  &#125;
+  render() &#123;
+
+    return (
+      <div>
+        <h1>当前求和为:&#123;this.props.count&#125;</h1>
+        <select ref=&#123;c => this.selectNumber = c&#125;>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <button onClick=&#123;this.increment&#125;>+</button>
+        <button onClick=&#123;this.decrement&#125;>-</button>
+        <button onClick=&#123;this.incrementIfOdd&#125;>当前求和为奇数再加</button>
+        <button onClick=&#123;this.incrementAsync&#125;>异步加</button>
+      </div>
+    )
+  &#125;
+&#125;
+</code></pre>
+<p>创建Count容器的简写：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//创建Count的容器组件 
+const CountContainer = connect(
+  state => (&#123; count: state &#125;),
+  //一般写法
+  // dispatch => (
+  //   &#123;
+  //     jia: (number) => &#123;
+  //       dispatch(createIncrementAction(number))
+  //     &#125;,
+  //     jian: (number) => &#123;
+  //       dispatch(createDecrementAction(number))
+  //     &#125;,
+  //     jianAsync: (number, time) => &#123;
+  //       dispatch(createIncrementAsyncAciton(number, time))
+  //     &#125;
+  //   &#125;
+  // )
+  //简写：
+  &#123;
+    jia: createIncrementAction,
+    jian: createDecrementAction,
+    jianAsync: createIncrementAsyncAciton
+  &#125;
+)(CountUI)
+</code></pre>
+<p>因为在每次使用容器的时候都要传入store 比较麻烦所以可以进行优化</p>
+<p>在初始文件index.js中 引入store 和 Provider 将App总组件包裹起来然后传入store</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import React from "react";
+import  ReactDOM  from "react-dom";
+import App from "./App";
+
+import  store from './component/redux/store'
+import &#123;Provider&#125; from 'react-redux'
+
+
+ReactDOM.render(
+  <Provider store=&#123;store&#125;>
+    <App/>
+  </Provider>
+  ,document.getElementById('root'))
+</code></pre>
+<p>多个组件要使用redux 进行存储的时候。需要用到combineReducers </p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//store
+
+
+//引入createStore，专门用于创建redux 中最为核心的store对象
+import &#123; createStore,applyMiddleware,combineReducers &#125; from 'redux'
+//引入为Count 组件服务的reducer
+import countReducer from './reducer/count_reducer'
+import personReducer from './reducer/person'
+//引入redux-thunk 
+import thunk from 'redux-thunk'
+const allReducer=combineReducers(&#123;
+  he:countReducer,
+  rens:personReducer
+&#125;)
+
+export default createStore(allReducer,applyMiddleware(thunk))
+</code></pre>
+<ul>
+<li><p>使用redux开发者工具</p>
+<p>下载包：cnpm i  redux-devtools-extension</p>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//在store.js中
+
+//引入createStore创建redux最重要的store
+ import &#123;createStore,combineReducers,applyMiddleware&#125; from 'redux'
+
+//导入count_reducer
+import count_reducer from './reducer/count'
+import &#123;composeWithDevTools&#125; from 'redux-devtools-extension'
+import thunk from 'redux-thunk'
+const allReducer=combineReducers(&#123;
+   he:count_reducer
+&#125;)
+
+export default  createStore(allReducer,composeWithDevTools(applyMiddleware(thunk)))
+</code></pre>
+<h3 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h3><ul>
+<li><p>懒加载</p>
+<p> ```javascript<br> import React {component,lazy,Suspense} from ‘react’</p>
+<p> //懒加载引入组件<br> const Home =lazy(()=&gt;import(‘./Home’))<br> const About=lazy(()=&gt;import(‘./About’))</p>
+<p> //用Suspense 将注册的路由包裹起来然后指定一个fallback<br> <Suspense fallback="{<h1">Loading…<h1>}&gt;</h1></Suspense></p>
+<pre><code>    &lt;Route path=&quot;/about&quot; component=&#123;About&#125;/&gt;
+ &lt;Route path=&quot;/home&quot;  component=&#123;Home&#125;/&gt;
+</code></pre> <Suspense>
+
+
+</Suspense></li>
+</ul>
+<pre><code>
+-  Hooks 
+
+  - stateHook
+
+   让函数式组件可以使用state
+
+  React.useState
+
+  ```javascript
+  export default function Context() &#123;
+    //数组的解构赋值  第一个代表传入的state 第二个是设置state的方法
+    const [count, setCount] = React.useState(0)
+    function add() &#123;
+      //第一种写法
+      // setCount(count + 1)
+      //第二种写法
+      setCount(count =&gt; count + 1)
+    &#125;
+    return (
+      &lt;div&gt;
+        &lt;h2&gt;当前求和为:&#123;count&#125;&lt;/h2&gt;
+        &lt;button onClick=&#123;add&#125;&gt;点我+1&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  &#125;
+</code></pre><ul>
+<li><p>EffectHook</p>
+<p>让函数式组件可以使用生命周期钩子</p>
+<p>React.useEffect</p>
+<p>这个相当于两个生命周期钩子  一个是componentDidMount 和componentDidUpdate</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">   //不写这个数组谁都检测，写这个空数组谁都不检测，在空数组中写[count]只检测count
+   React.useEffect(() => &#123;
+     console.log(1);
+   &#125;, [])import React from 'react'
+
+ export default function Context() &#123;
+   //数组的解构赋值  第一个代表传入的state 第二个是设置state的方法
+   const [count, setCount] = React.useState(0)
+   function add() &#123;
+     setCount(count => count + 1)
+   &#125;
+   //不写这个数组谁都检测，写这个空数组谁都不检测，在空数组中写[count]只检测count
+   React.useEffect(() => &#123;
+     console.log(1);
+   &#125;, [])
+   return (
+     <div>
+       <h2>当前求和为:&#123;count&#125;</h2>
+       <button onClick=&#123;add&#125;>点我+1</button>
+     </div>
+   )
+ &#125;
+</code></pre>
+<p>React.useEffect回调的返回值相当于componentWillOnMount可以用来清除定时器</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  //不写这个数组谁都检测，写这个空数组谁都不检测，在空数组中写[count]只检测count
+  React.useEffect(() => &#123;
+    let timer = setInterval(() => &#123;
+      setCount(count => count + 1)
+    &#125;, 1000)
+    return () => &#123;
+      //相当于componentWillOnMount可以用来清除定时器
+      clearInterval(timer)
+    &#125;
+  &#125;, [])
+</code></pre>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307145441422.png" alt="image-20220307145441422"></p>
+</li>
+</ul>
+<ul>
+<li><p>RefHook</p>
+<p>在函数组件中使用ref</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">  //使用ref
+  const myRef = React.useRef()
+
+  <input type="text" ref=&#123;myRef&#125; />
+
+   function show() &#123;
+    alert(myRef.current.value)
+  &#125;
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>Context</p>
+<p>一种组件间通信方式 常用于祖组件与后代组件通信</p>
+<p>1.创建Context对象</p>
+<p>2.从Context 对象中引出Provider，将要传递的子组件用Provider包裹起来并指定要传的数据</p>
+<p>3.在子组件中声明接收context</p>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import React, &#123; Component &#125; from 'react'
+
+
+//创建Context对象
+const MyContext = React.createContext()
+const &#123; Provider &#125; = MyContext
+export default class A extends Component &#123;
+  state = &#123;
+    username: 'wuyang',
+    age: 18
+  &#125;
+  render() &#123;
+    const &#123; username, age &#125; = this.state
+    return (
+      <div>
+        <h2>我是A组件</h2>
+        <Provider value=&#123;&#123; username, age &#125;&#125;>
+          <B />
+        </Provider>
+      </div>
+    )
+  &#125;
+&#125;
+
+
+class B extends Component &#123;
+  //声明接收context
+  static contextType = MyContext
+  render() &#123;
+    const &#123; username, age &#125; = this.context
+    return (
+      <div>
+        我是B组件
+        <h4>接收到的&#123;username&#125;-&#123;age&#125;</h4>
+        <C />
+      </div>
+    )
+  &#125;
+&#125;
+
+
+
+class C extends Component &#123;
+  //声明接收context
+  static contextType = MyContext
+  render() &#123;
+    const &#123; username, age &#125; = this.context
+    return (
+      <div>
+        我是C组件
+        <h4>接收到的&#123;username&#125;-&#123;age&#125;</h4>
+      </div>
+    )
+  &#125;
+&#125;
+</code></pre>
+<ul>
+<li><p>PureComponent</p>
+<p>component 存在一定的问题：</p>
+<p>1.只要执行setState() 即使不改变状态数据，组件也会重新render()</p>
+<p>2.只当前组件重新render()，就会自动重新render子组件。纵使子组件没有用到父组件的任何数据 ==》效率低</p>
+</li>
+</ul>
+<p>解决方法：不使用component 使用PureComponent</p>
+<ul>
+<li><p>renderProps</p>
+<p>父组件中使用子组件的另一种方式：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">export default class parent extends Component &#123;
+ render() &#123;
+   return (
+     <div>
+       <h3>我是Parent组件</h3>
+       <A render=&#123;(name, age) => <B name=&#123;name&#125; age=&#123;age&#125; />&#125; />
+     </div>
+   )
+ &#125;
+&#125;
+</code></pre>
+<p>相当于表明当前在parent组件中使用了A组件，A组件中又使用了B组件。但是B组件要进行使用还需要在A组件中接收一下 {this.props.render()}</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">class A extends Component &#123;
+ state = &#123;
+   username: 'wuyang',
+   age: 18
+ &#125;
+ render() &#123;
+   const &#123; username, age &#125; = this.state
+   return (
+     <div>
+       <h2>我是A组件</h2>
+       &#123;this.props.render(username,age)&#125;
+     </div>
+   )
+ &#125;
+&#125;
+</code></pre>
+<p>在B组件中接收到得参数使用</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">
+class B extends Component &#123;
+
+ render() &#123;
+
+   return (
+     <div>
+       我是B组件
+       <h4>接收到的&#123;this.props.name&#125;,&#123;this.props.age&#125;</h4>
+       <C />
+     </div>
+   )
+ &#125;
+&#125;
+</code></pre>
+</li>
+<li><p>错误边界 </p>
+</li>
+</ul>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307101230856.png" alt="image-20220307101230856"></p>
+<ul>
+<li>组件通信</li>
+</ul>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307103649028.png" alt="image-20220307103649028"></p>
+<h3 id="React-Router6的使用"><a href="#React-Router6的使用" class="headerlink" title="React Router6的使用"></a>React Router6的使用</h3><ul>
+<li><p>Router5中 注册路由使用component</p>
+<p>Router6中</p>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Routers>
+    <Route path="/about" element=&#123;<About/>&#125; > 
+<Routers/>
+</code></pre>
+<ul>
+<li>重定向</li>
+</ul>
+<p>Router5 中使用Redirect</p>
+<p>Router6中 使用Navigate进行重定向</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Routes>
+    <Route path="/" element=&#123;<Navigate to="/about"/>&#125;>
+<Routes/>
+</code></pre>
+<ul>
+<li>Routes与Route </li>
+</ul>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307150517405.png" alt="image-20220307150517405"></p>
+<ul>
+<li><p>NavLink高亮</p>
+<p>{isActive}是解构出来isActive 选中是为true没有选中时为flase</p>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//路由连接 atguigu 是自定义高亮的样式
+<NavLink className=&#123;(&#123;isActive=>&#123;return isactive?'list-group-item atguigu':'list-group-item '&#125;&#125;) to="/about"&#125;>About<NavLink>
+
+
+//复用写法
+    function computedClassName(&#123;isActive&#125;)&#123;
+    return isActive ? 'list-group-item atguigu'
+&#125;
+
+    <NavLink className=&#123;computedClassName&#125; to="/about">About<NavLink/>
+</code></pre>
+<ul>
+<li><p>路由表</p>
+<p>1.引入useRoutes</p>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307151644425.png" alt="image-20220307151644425"></p>
+<p>2.创建路由表</p>
+<p>```java<br>const elements=useRoutes([{<br>   path:”/about”,<br>   element:<About><br>},{<br>   path:”/home”,<br>   element:<Home><br>},{<br>   path:”/“,  //重定向<br>   element:<Navigate to="/about"><br>}])</Navigate></Home></About></p>
+</li>
+</ul>
+<p>   //注册路由直接使用路由表</p>
+<p>  {elements}   </p>
+<pre><code>
+  ![image-20220307152054768](C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307152054768.png)
+
+  上方图片中一堆相当于创建的路由表也就是&#123;elements&#125;
+
+-  嵌套路由
+
+  ![image-20220307152646294](C:\Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307152646294.png)
+
+和vue中的基本一样
+
+路由注册
+
+```javascript
+//功能指定路由组件呈现在哪里 
+important &#123;Outlet&#125; from &#39;react-router-dom&#39;
+
+//指定路由组件呈现的位置
+&lt;Outlet /&gt;
+</code></pre><ul>
+<li>路由传参 <ul>
+<li><ol>
+<li>路由的params参数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">//传入id，title，content参数
+<Link to=&#123;`detail/$&#123;m.id&#125;/$&#123;m.title&#125;/$&#123;m.content&#125;`&#125;>&#123;m.title&#125;</Link>
+</code></pre>
+<p>在路由表中声明要传入的参数</p>
+<p><img src="/2021/Users\0\AppData\Roaming\Typora\typora-user-images\image-20220307154359815.png" alt="image-20220307154359815"></p>
+<p>在路由组件中使用时，因为函数式组件this是undefined所以需要借助useParams</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import &#123;useParams&#125; from 'react-router-dom'
+//从useParams中解构出来
+const &#123;id,title,content&#125; =useParams()
+</code></pre>
+<p>​           2.路由的search参数</p>
+<p>search 用问号进行分割</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Link to=&#123;`detail?id=&#123;m.id&#125;&title=$&#123;m.title&#125;&content=$&#123;m.content&#125;`&#125;>&#123;m.title&#125;</Link>
+</code></pre>
+<p>不用占位规则</p>
+<p>在组件中使用：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import &#123;useSearchParams&#125; from 'react-router-dom'
+//需要解构数组进行使用
+const [search,setSearch]=useSearchParams
+//需要使用get方法然后得到具体的参数
+const id=search.get('id')
+cosnt title=search.get('title')
+//使用setSearch进行更新
+<button onClick=&#123;()=>&#123;setSearch('id=001&title=哈哈&content="66"')&#125;&#125;>
+</code></pre>
+<p>​            3.路由的state参数</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript"><Link to="detail" state=&#123;&#123;id:m.id,title:m.title,content:m.content&#125;&#125;>
+</code></pre>
+<p>在组件中使用：</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">import &#123;useLocation&#125; from 'react-router-dom'
+//连续解构赋值
+const &#123;state:&#123;id,title,content&#125;&#125; =useLocation()
+</code></pre>
+<ul>
+<li>编程式路由导航</li>
+</ul>
+<p>引入useNavigate</p>
+<pre class=" language-lang-javascript"><code class="language-lang-javascript">const navigate=useNavigate()
+
+
+//使用编程式导航
+function show(m)&#123;
+    navigate('detail',&#123;
+        state:&#123;
+            id:m.id,
+            title:m.title,
+            content:m.content
+        &#125;
+    &#125;)
+&#125;
+</code></pre>
 
                 
             </div>
